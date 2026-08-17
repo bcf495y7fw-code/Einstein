@@ -16,6 +16,8 @@
   --c-shp: #f6e9de;
   --c-grk: #f1edda;
   --c-col: transparent;
+  --c-cur: #fcf3cf;
+  --c-crd: #fadbd8;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -34,6 +36,8 @@
     --c-shp: #322a23;
     --c-grk: #2f2d21;
     --c-col: transparent;
+    --c-cur: #3a341c;
+    --c-crd: #362222;
   }
 }
 
@@ -132,17 +136,20 @@ main { max-width: 980px; margin: 0 auto; }
 
 .chip {
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 1.7em; height: 1.7em; padding: 0 0.38em; margin: 0 0.14em;
+  width: 1.8em; height: 1.8em; padding: 0; margin: 0 0.14em;
   border: 1px solid var(--line2); border-radius: 6px;
   font-size: 15px; line-height: 1; vertical-align: middle;
 }
-.chip .swatch { width: 13px; height: 13px; }
+.chip .swatch { width: 14px; height: 14px; border-radius: 2px; }
+
 .set-num { background: var(--c-num); }
 .set-ltr { background: var(--c-ltr); }
 .set-op  { background: var(--c-op); }
 .set-shp { background: var(--c-shp); }
 .set-grk { background: var(--c-grk); }
 .set-col { background: var(--c-col); }
+.set-cur { background: var(--c-cur); }
+.set-crd { background: var(--c-crd); }
 
 .tray-chip {
   width: 46px; height: 46px; min-width: 46px; padding: 0;
@@ -154,11 +161,12 @@ main { max-width: 980px; margin: 0 auto; }
 
 /* ---------- hints ---------- */
 .hints-wrap { max-width: 540px; margin: 28px auto 0; }
-h2 {
-  margin: 0 0 8px; font-size: 12px; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.5;
-}
+.hints-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.hints-header h2 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.5; }
+#toggleHints { padding: 4px 10px; font-size: 12px; }
+
 #hints { list-style: none; margin: 0; padding: 0; }
+#hints.hidden { display: none; }
 #hints li { font-size: 15.5px; line-height: 2.2; border-top: 1px solid var(--faint); }
 #hints li:first-child { border-top: none; }
 
