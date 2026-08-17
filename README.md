@@ -1,11 +1,11 @@
 # Einstein (PWA)
 
 A minimalist, offline-capable web remake of the open-source logic puzzle
-**Einstein** (itself a remake of the DOS game *Sherlock*). No hints, no undo.
+**Einstein** (itself a remake of the DOS game *Sherlock*). 
 
 ## Rules
 - The board is 4×4 or 6×6. Each row contains one full set of symbols
-  (numbers, letters, signs, shapes, Greek letters, colors), each exactly once.
+  (numbers, letters, signs, shapes, Greek letters, colors, currencies, or cards), each exactly once.
 - A few cells are revealed at the start. The statements below the board
   describe column relationships between symbols.
 - Tap an empty cell, then tap a symbol to place it. Correct placements are
