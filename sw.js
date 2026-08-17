@@ -1,4 +1,4 @@
-const CACHE = 'einstein-v2';
+const CACHE = 'einstein-v3';
 
 const ASSETS = [
   './',
