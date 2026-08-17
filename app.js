@@ -29,6 +29,10 @@ const SETS = [
   { id: 'col', kind: 'color',  glyphs: null,
     colors: ['#cf8b8b', '#d9a06b', '#cdb45f', '#8ab87f', '#7fa3c9', '#a08bc4'],
     names: ['red', 'orange', 'yellow', 'green', 'blue', 'violet'] },
+  { id: 'cur', kind: 'currency', glyphs: ['€', '$', '¥', '£', '₹', '₣'],
+    names: ['euro', 'dollar', 'yen', 'pound', 'rupee', 'franc'] },
+  { id: 'crd', kind: 'card', glyphs: ['♠', '♥', '♦', '♣'],
+    names: ['spades', 'hearts', 'diamonds', 'clubs'], maxN: 4 },
 ];
 
 /* ================= solver =================
@@ -114,8 +118,11 @@ function supported(vars, vi, x, dom, h, N) {
     switch (h.type) {
       case 'same':    return ca === cb;
       case 'left':    return ca < cb;
+      case 'right':   return ca > cb;
       case 'next':    return Math.abs(ca - cb) === 1;
-      case 'between': return (cb < ca && ca < cc) || (cc < ca && ca < cb);
+      case 'adj':     return Math.abs(ca - cb) === 1;
+      case 'dist2':   return Math.abs(ca - cb) === 2;
+      case 'between': return (cb === ca - 1 && cc === ca + 1) || (cc === ca - 1 && cb === ca + 1);
       case 'notsame': return ca !== cb;
       case 'first':   return ca === 0;
       case 'last':    return ca === N - 1;
@@ -167,9 +174,11 @@ function candidateHints(N, sol, existing) {
         if (i < j) push({ type: 'same', a, b });
       } else {
         if (ca < cb) push({ type: 'left', a, b });
+        if (ca > cb) push({ type: 'right', a, b });
         if (i < j) {
           push({ type: 'notsame', a, b });
-          if (Math.abs(ca - cb) === 1) push({ type: 'next', a, b });
+          if (Math.abs(ca - cb) === 1) push({ type: Math.random() < 0.5 ? 'next' : 'adj', a, b });
+          if (Math.abs(ca - cb) === 2) push({ type: 'dist2', a, b });
         }
       }
     }
@@ -181,15 +190,21 @@ function candidateHints(N, sol, existing) {
     const c = syms[(Math.random() * syms.length) | 0];
     if (a === b || a === c || b === c) continue;
     const ca = col(a.r, a.s), cb = col(b.r, b.s), cc = col(c.r, c.s);
-    if ((cb < ca && ca < cc) || (cc < ca && ca < cb)) push({ type: 'between', a, b, c });
+    if ((cb === ca - 1 && cc === ca + 1) || (cc === ca - 1 && cb === ca + 1)) {
+        push({ type: 'between', a, b, c });
+    }
   }
   return out;
 }
 
-const HINT_BASE = { same: 1, left: 1, next: 1, between: 1.15, notsame: 0.55, first: 0.35, last: 0.35 };
+const HINT_BASE = { same: 1, left: 1, right: 1, next: 1, adj: 1, dist2: 0.8, between: 1.15, notsame: 0.55, first: 0.35, last: 0.35 };
 
 function generatePuzzle(N) {
-  const sets = shuffle(range(SETS.length)).slice(0, N);
+  const validIndices = [];
+  for (let i = 0; i < SETS.length; i++) {
+    if (!SETS[i].maxN || SETS[i].maxN >= N) validIndices.push(i);
+  }
+  const sets = shuffle(validIndices).slice(0, N);
 
   for (let attempt = 0; attempt < 80; attempt++) {
     const sol = Array.from({ length: N }, () => shuffle(range(N)));
@@ -281,6 +296,7 @@ const ovBtn     = document.getElementById('ovBtn');
 const strikesEl = document.getElementById('strikes');
 const soundBtn  = document.getElementById('soundBtn');
 const newBtn    = document.getElementById('newBtn');
+const toggleHintsBtn = document.getElementById('toggleHints');
 
 /* ================= sounds (synthesized, no assets) ================= */
 
@@ -309,7 +325,7 @@ const sounds = (() => {
     ok()   { if (!soundOn) return; note(660, { dur: 0.12 }); note(990, { at: 0.08, dur: 0.16, vol: 0.035 }); },
     bad()  { if (!soundOn) return; note(233, { dur: 0.16, type: 'triangle' }); note(174, { at: 0.1, dur: 0.22, type: 'triangle', vol: 0.05 }); },
     win()  { if (!soundOn) return; [523, 659, 784, 1046].forEach((f, i) => note(f, { at: i * 0.09, dur: 0.22, vol: 0.04 })); },
-    lose() { if (!soundOn) return; [392, 311, 262].forEach((f, i) => note(f, { at: i * 0.12, dur: 0.26, type: 'triangle', vol: 0.045 })); },
+    lose() { if (!soundOn) return; [392, 311, 262].forEach((f, i) => note(f, { at: i * 0.12, dur: 0.26, type: 'triangle', vol: 0.045 }); },
   };
 })();
 
@@ -341,7 +357,10 @@ function hintParts(h) {
   switch (h.type) {
     case 'same':    return [A(), ' is in the same column as ', B(), '.'];
     case 'left':    return [A(), ' is to the left of ', B(), '.'];
+    case 'right':   return [A(), ' is to the right of ', B(), '.'];
     case 'next':    return [A(), ' is next to ', B(), '.'];
+    case 'adj':     return [A(), ' is adjacent to ', B(), '.'];
+    case 'dist2':   return [A(), ' is separated by one column from ', B(), '.'];
     case 'between': return [A(), ' is between ', B(), ' and ', C(), '.'];
     case 'notsame': return [A(), ' is not in the same column as ', B(), '.'];
     case 'first':   return [A(), ' is in the first column.'];
@@ -355,7 +374,10 @@ function hintAria(h) {
   switch (h.type) {
     case 'same':    return `${n(h.a)} is in the same column as ${n(h.b)}`;
     case 'left':    return `${n(h.a)} is to the left of ${n(h.b)}`;
+    case 'right':   return `${n(h.a)} is to the right of ${n(h.b)}`;
     case 'next':    return `${n(h.a)} is next to ${n(h.b)}`;
+    case 'adj':     return `${n(h.a)} is adjacent to ${n(h.b)}`;
+    case 'dist2':   return `${n(h.a)} is separated by one column from ${n(h.b)}`;
     case 'between': return `${n(h.a)} is between ${n(h.b)} and ${n(h.c)}`;
     case 'notsame': return `${n(h.a)} is not in the same column as ${n(h.b)}`;
     case 'first':   return `${n(h.a)} is in the first column`;
@@ -413,6 +435,7 @@ function renderStrikes() {
 }
 
 function renderHints() {
+  const isHidden = hintsEl.classList.contains('hidden');
   hintsEl.innerHTML = '';
   for (const h of G.hints) {
     const li = document.createElement('li');
@@ -422,6 +445,7 @@ function renderHints() {
     li.setAttribute('aria-label', hintAria(h));
     hintsEl.appendChild(li);
   }
+  if (isHidden) hintsEl.classList.add('hidden');
 }
 
 function renderTray() {
@@ -576,6 +600,11 @@ soundBtn.addEventListener('click', () => {
   soundBtn.classList.toggle('muted', !soundOn);
   soundBtn.setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off');
   if (soundOn) sounds.tick();
+});
+
+toggleHintsBtn.addEventListener('click', () => {
+  hintsEl.classList.toggle('hidden');
+  toggleHintsBtn.textContent = hintsEl.classList.contains('hidden') ? 'Show' : 'Hide';
 });
 
 /* ================= init ================= */
