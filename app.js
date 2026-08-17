@@ -648,24 +648,24 @@ function lose() {
 function showOverlay(title, sub) {
   ovTitle.textContent = title;
   ovSub.textContent = sub;
-  overlayEl.hidden = false;
+  overlayEl.removeAttribute('hidden');
 }
 
 /* ================= flow ================= */
 
 function startGame(state) {
   G = state; sel = null;
-  menuEl.hidden = true;
-  overlayEl.hidden = true;
-  gameEl.hidden = false;
+  menuEl.setAttribute('hidden', '');
+  overlayEl.setAttribute('hidden', '');
+  gameEl.removeAttribute('hidden');
   renderBoard(); renderStrikes(); renderHints(); renderTray();
 }
 
 function showMenu() {
   G = null; sel = null;
-  gameEl.hidden = true;
-  overlayEl.hidden = true;
-  menuEl.hidden = false;
+  gameEl.setAttribute('hidden', '');
+  overlayEl.setAttribute('hidden', '');
+  menuEl.removeAttribute('hidden');
   renderStrikes();
 }
 
