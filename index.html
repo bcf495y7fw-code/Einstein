@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Einstein</title>
+  <meta name="description" content="A minimalist logic puzzle. Deduce the grid — no hints, no undo.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fafaf8">
+  <meta name="theme-color" content="#141517" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Einstein">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Einstein</h1>
+    <div class="hdr-right">
+      <div id="strikes" aria-label="3 tries left"></div>
+      <button id="soundBtn" class="icon-btn" type="button" aria-label="Sound on">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/>
+          <path class="wav" d="M15.5 8.5a5 5 0 0 1 0 7"/>
+          <line class="mut" x1="4" y1="20" x2="20" y2="4"/>
+        </svg>
+      </button>
+      <button id="newBtn" class="btn" type="button">New</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="menu" hidden>
+      <p class="menu-sub">
+        Each row holds one of every symbol in its set.<br>
+        Work out the grid from the statements.<br>
+        A wrong placement costs one of three tries.
+      </p>
+      <div class="menu-btns">
+        <button class="menu-btn" type="button" data-n="4">
+          <span class="big">4 × 4</span><span class="sub">short</span>
+        </button>
+        <button class="menu-btn" type="button" data-n="6">
+          <span class="big">6 × 6</span><span class="sub">classic</span>
+        </button>
+      </div>
+      <p class="credit">after the open-source game “Einstein”, a remake of “Sherlock”</p>
+    </section>
+
+    <section id="game" hidden>
+      <div id="board" aria-label="board"></div>
+      <div id="tray" aria-label="symbol choices"></div>
+      <div class="hints-wrap">
+        <h2>Hints</h2>
+        <ul id="hints"></ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="overlay" hidden>
+    <div class="panel">
+      <h2 id="ovTitle"></h2>
+      <p id="ovSub"></p>
+      <button id="ovBtn" class="btn" type="button">New puzzle</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
