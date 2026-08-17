@@ -704,15 +704,41 @@ toggleHintsBtn.addEventListener('click', () => {
 /* ================= init ================= */
 
 function init() {
-  try { soundOn = localStorage.getItem(MKEY) !== '0'; } catch (e) {}
+  clearOldSaves();
+
+  try {
+    soundOn = localStorage.getItem(MKEY) !== '0';
+  } catch (e) {}
+
   soundBtn.classList.toggle('muted', !soundOn);
   soundBtn.setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off');
 
-  if ('ResizeObserver' in window) new ResizeObserver(fitBoard).observe(boardEl);
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(fitBoard).observe(boardEl);
+  }
+
   window.addEventListener('resize', fitBoard);
 
-  const saved = loadSave();
-  if (saved) startGame(saved); else showMenu();
+  let saved = null;
+
+  try {
+    saved = loadSave();
+  } catch (e) {
+    saved = null;
+    clearSave();
+  }
+
+  if (saved) {
+    try {
+      startGame(saved);
+    } catch (err) {
+      console.error('Discarding corrupted saved game:', err);
+      clearSave();
+      showMenu();
+    }
+  } else {
+    showMenu();
+  }
 
   if ('serviceWorker' in navigator &&
       (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
