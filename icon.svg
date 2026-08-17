@@ -1,13 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#fafaf8" stroke="#26272b" stroke-width="16"/>
-  <g stroke="#26272b" stroke-width="12" fill="none" transform="translate(96, 96)">
-    <rect x="0" y="0" width="140" height="140"/>
-    <rect x="180" y="0" width="140" height="140"/>
-    <rect x="0" y="180" width="140" height="140"/>
-    <rect x="180" y="180" width="140" height="140"/>
+  <rect width="512" height="512" fill="#fafaf8"/>
+  <rect x="256" y="176" width="80" height="80" fill="#9db4cf"/>
+  <rect x="96" y="336" width="80" height="80" fill="#d9a06b"/>
+  <g stroke="#26272b" stroke-width="6" fill="none">
+    <rect x="96" y="96" width="320" height="320"/>
+    <line x1="176" y1="96" x2="176" y2="416"/>
+    <line x1="256" y1="96" x2="256" y2="416"/>
+    <line x1="336" y1="96" x2="336" y2="416"/>
+    <line x1="96" y1="176" x2="416" y2="176"/>
+    <line x1="96" y1="256" x2="416" y2="256"/>
+    <line x1="96" y1="336" x2="416" y2="336"/>
   </g>
-  <circle cx="166" cy="166" r="30" fill="#cf8b8b"/>
-  <path d="M326 120 l50 90 l-100 0 Z" fill="#d9a06b"/>
-  <rect x="136" y="326" width="60" height="60" fill="#8ab87f"/>
-  <text x="326" y="400" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" fill="#7fa3c9">?</text>
 </svg>
