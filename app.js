@@ -263,7 +263,9 @@ function generatePuzzle(N) {
 
 /* ================= state & storage ================= */
 
-const SKEY = 'einstein-pwa-v1';
+const SKEY = 'einstein-pwa-v2';
+const OLD_SKEYS = ['einstein-pwa-v1'];
+
 const MKEY = 'einstein-pwa-sound';
 const MAX_MISTAKES = 3;
 
@@ -271,16 +273,108 @@ let G = null;       /* current game state */
 let sel = null;     /* selected cell {r, c} */
 let soundOn = true;
 
-function save() { try { localStorage.setItem(SKEY, JSON.stringify(G)); } catch (e) {} }
+function save() {
+  try {
+    localStorage.setItem(SKEY, JSON.stringify(G));
+  } catch (e) {}
+}
+
+function clearSave() {
+  try {
+    localStorage.removeItem(SKEY);
+  } catch (e) {}
+}
+
+function clearOldSaves() {
+  try {
+    for (const key of OLD_SKEYS) {
+      localStorage.removeItem(key);
+    }
+  } catch (e) {}
+}
+
+function isValidPositionVar(j, v) {
+  return (
+    v &&
+    Number.isInteger(v.r) &&
+    Number.isInteger(v.s) &&
+    v.r >= 0 && v.r < j.N &&
+    v.s >= 0 && v.s < j.N
+  );
+}
+
+function isValidCell(j, v) {
+  return (
+    v &&
+    Number.isInteger(v.r) &&
+    Number.isInteger(v.c) &&
+    Number.isInteger(v.s) &&
+    v.r >= 0 && v.r < j.N &&
+    v.c >= 0 && v.c < j.N &&
+    v.s >= 0 && v.s < j.N
+  );
+}
+
+function isValidSave(j) {
+  if (!j || j.v !== 1 || j.done) return false;
+  if (!Number.isInteger(j.N) || ![4, 6].includes(j.N)) return false;
+
+  if (!Array.isArray(j.sets) || j.sets.length !== j.N) return false;
+  for (const idx of j.sets) {
+    if (!Number.isInteger(idx) || idx < 0 || idx >= SETS.length) return false;
+    const set = SETS[idx];
+    if (set.maxN && set.maxN < j.N) return false;
+  }
+
+  if (!Array.isArray(j.sol) || j.sol.length !== j.N) return false;
+  for (const row of j.sol) {
+    if (!Array.isArray(row) || row.length !== j.N) return false;
+    for (const s of row) {
+      if (!Number.isInteger(s) || s < 0 || s >= j.N) return false;
+    }
+  }
+
+  if (!Array.isArray(j.revealed)) return false;
+  if (!Array.isArray(j.placed)) return false;
+  if (!Array.isArray(j.hints)) return false;
+
+  if (!j.revealed.every(v => isValidCell(j, v))) return false;
+  if (!j.placed.every(v => isValidCell(j, v))) return false;
+
+  if (!Number.isInteger(j.mistakes) || j.mistakes < 0 || j.mistakes >= MAX_MISTAKES) {
+    return false;
+  }
+
+  for (const h of j.hints) {
+    if (!h || typeof h.type !== 'string') return false;
+    if (!isValidPositionVar(j, h.a)) return false;
+    if (h.b && !isValidPositionVar(j, h.b)) return false;
+    if (h.c && !isValidPositionVar(j, h.c)) return false;
+  }
+
+  return true;
+}
+
 function loadSave() {
   try {
     const j = JSON.parse(localStorage.getItem(SKEY));
-    if (j && j.v === 1 && Number.isInteger(j.N) && Array.isArray(j.sol) &&
-        j.sol.length === j.N && !j.done) return j;
-  } catch (e) {}
+
+    if (!j) return null;
+
+    if (isValidSave(j)) {
+      return j;
+    }
+
+    /* Corrupt/incompatible save: discard it */
+    localStorage.removeItem(SKEY);
+  } catch (e) {
+    try {
+      localStorage.removeItem(SKEY);
+    } catch (_) {}
+  }
+
   return null;
 }
-function clearSave() { try { localStorage.removeItem(SKEY); } catch (e) {} }
 
 /* ================= DOM refs ================= */
 
