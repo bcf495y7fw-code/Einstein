@@ -42,7 +42,7 @@
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-[hidden] { display: none; }
+[hidden] { display: none !important; }
 
 html, body { margin: 0; padding: 0; }
 body {
