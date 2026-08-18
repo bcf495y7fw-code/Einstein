@@ -419,7 +419,7 @@ const sounds = (() => {
     ok()   { if (!soundOn) return; note(660, { dur: 0.12 }); note(990, { at: 0.08, dur: 0.16, vol: 0.035 }); },
     bad()  { if (!soundOn) return; note(233, { dur: 0.16, type: 'triangle' }); note(174, { at: 0.1, dur: 0.22, type: 'triangle', vol: 0.05 }); },
     win()  { if (!soundOn) return; [523, 659, 784, 1046].forEach((f, i) => note(f, { at: i * 0.09, dur: 0.22, vol: 0.04 })); },
-    lose() { if (!soundOn) return; [392, 311, 262].forEach((f, i) => note(f, { at: i * 0.12, dur: 0.26, type: 'triangle', vol: 0.045 }); },
+    lose() { if (!soundOn) return; [392, 311, 262].forEach((f, i) => note(f, { at: i * 0.12, dur: 0.26, type: 'triangle', vol: 0.045 })); },
   };
 })();
 
