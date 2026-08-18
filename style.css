@@ -166,23 +166,17 @@ main { max-width: 980px; margin: 0 auto; }
 #toggleHints { padding: 4px 10px; font-size: 12px; }
 
 #hints { list-style: none; margin: 0; padding: 0; }
-#hints.hidden { display: none; }
 #hints li {
   font-size: 15.5px; line-height: 2.2; border-top: 1px solid var(--faint);
   display: flex; align-items: center; gap: 12px; padding: 6px 0;
 }
 #hints li:first-child { border-top: none; }
-#hints li.hint-hidden { 
-  opacity: 0.4; 
-  border-top: none; 
-  padding: 0; 
-  margin: 0; 
-}
+/* Replaces opacity fading with completely hiding the element from layout */
+#hints li.hint-hidden { display: none; }
 
 .hint-content {
   flex: 1 1 auto;
 }
-.hint-content.hidden { display: none; }
 
 .hint-toggle {
   padding: 4px 10px;
