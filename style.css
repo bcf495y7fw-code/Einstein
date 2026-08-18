@@ -172,7 +172,12 @@ main { max-width: 980px; margin: 0 auto; }
   display: flex; align-items: center; gap: 12px; padding: 6px 0;
 }
 #hints li:first-child { border-top: none; }
-#hints li.hint-hidden { opacity: 0.4; }
+#hints li.hint-hidden { 
+  opacity: 0.4; 
+  border-top: none; 
+  padding: 0; 
+  margin: 0; 
+}
 
 .hint-content {
   flex: 1 1 auto;
