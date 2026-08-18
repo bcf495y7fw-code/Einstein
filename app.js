@@ -533,9 +533,27 @@ function renderHints() {
   hintsEl.innerHTML = '';
   for (const h of G.hints) {
     const li = document.createElement('li');
+    
+    const content = document.createElement('span');
+    content.className = 'hint-content';
     for (const part of hintParts(h)) {
-      li.appendChild(typeof part === 'string' ? document.createTextNode(part) : part);
+      content.appendChild(typeof part === 'string' ? document.createTextNode(part) : part);
     }
+    
+    const btn = document.createElement('button');
+    btn.className = 'btn hint-toggle';
+    btn.type = 'button';
+    btn.textContent = 'Hide';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const hiding = !content.classList.contains('hidden');
+      content.classList.toggle('hidden', hiding);
+      li.classList.toggle('hint-hidden', hiding);
+      btn.textContent = hiding ? 'Show' : 'Hide';
+    });
+    
+    li.appendChild(content);
+    li.appendChild(btn);
     li.setAttribute('aria-label', hintAria(h));
     hintsEl.appendChild(li);
   }
