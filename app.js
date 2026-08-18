@@ -189,7 +189,7 @@ function candidateHints(N, sol, existing) {
     const b = syms[(Math.random() * syms.length) | 0];
     const c = syms[(Math.random() * syms.length) | 0];
     if (a === b || a === c || b === c) continue;
-    const ca = col(a.r, a.s), cb = col(b.r, a.s), cc = col(c.r, c.s);
+    const ca = col(a.r, a.s), cb = col(b.r, b.s), cc = col(c.r, c.s);
     if ((cb === ca - 1 && cc === ca + 1) || (cc === ca - 1 && cb === ca + 1)) {
         push({ type: 'between', a, b, c });
     }
@@ -245,7 +245,7 @@ function generatePuzzle(N) {
         if (propagate(N, revealed, fewer).solved) { hints.splice(i, 1); dropped = true; break; }
       }
     }
-    return { v: 1, N, sets, sol, revealed, hints, placed: [], mistakes: 0, done: null, hintsHidden: false };
+    return { v: 1, N, sets, sol, revealed, hints, placed: [], mistakes: 0, done: null };
   }
 
   /* Extremely rare fallback: reveal cells until the grid is forced. */
@@ -258,7 +258,7 @@ function generatePuzzle(N) {
     revealed.push({ r: p.r, c: p.c, s: sol[p.r][p.c] });
     if (propagate(N, revealed, []).solved) break;
   }
-  return { v: 1, N, sets, sol, revealed, hints: [], placed: [], mistakes: 0, done: null, hintsHidden: false };
+  return { v: 1, N, sets, sol, revealed, hints: [], placed: [], mistakes: 0, done: null };
 }
 
 /* ================= state & storage ================= */
@@ -341,8 +341,6 @@ function isValidSave(j) {
   if (!j.revealed.every(v => isValidCell(j, v))) return false;
   if (!j.placed.every(v => isValidCell(j, v))) return false;
 
-  if (j.hintsHidden !== undefined && typeof j.hintsHidden !== 'boolean') return false;
-
   if (!Number.isInteger(j.mistakes) || j.mistakes < 0 || j.mistakes >= MAX_MISTAKES) {
     return false;
   }
@@ -352,7 +350,6 @@ function isValidSave(j) {
     if (!isValidPositionVar(j, h.a)) return false;
     if (h.b && !isValidPositionVar(j, h.b)) return false;
     if (h.c && !isValidPositionVar(j, h.c)) return false;
-    if (h.hidden !== undefined && typeof h.hidden !== 'boolean') return false;
   }
 
   return true;
@@ -532,15 +529,12 @@ function renderStrikes() {
 }
 
 function renderHints() {
-  const isHidden = hintsEl.classList.contains('hidden');
   hintsEl.innerHTML = '';
   for (const h of G.hints) {
     const li = document.createElement('li');
-    if (h.hidden) li.classList.add('hint-hidden');
     
     const content = document.createElement('span');
     content.className = 'hint-content';
-    if (h.hidden) content.classList.add('hidden');
     for (const part of hintParts(h)) {
       content.appendChild(typeof part === 'string' ? document.createTextNode(part) : part);
     }
@@ -548,15 +542,12 @@ function renderHints() {
     const btn = document.createElement('button');
     btn.className = 'btn hint-toggle';
     btn.type = 'button';
-    btn.textContent = h.hidden ? 'Show' : 'Hide';
+    btn.textContent = 'Hide';
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const hiding = !content.classList.contains('hidden');
-      content.classList.toggle('hidden', hiding);
-      li.classList.toggle('hint-hidden', hiding);
-      btn.textContent = hiding ? 'Show' : 'Hide';
-      h.hidden = hiding;
-      save();
+      // Hides the whole hint including the button, and removes space
+      li.classList.add('hint-hidden');
+      btn.textContent = 'Show';
     });
     
     li.appendChild(content);
@@ -564,7 +555,6 @@ function renderHints() {
     li.setAttribute('aria-label', hintAria(h));
     hintsEl.appendChild(li);
   }
-  if (isHidden) hintsEl.classList.add('hidden');
 }
 
 function renderTray() {
@@ -683,15 +673,6 @@ function startGame(state) {
   menuEl.setAttribute('hidden', '');
   overlayEl.setAttribute('hidden', '');
   gameEl.removeAttribute('hidden');
-  
-  if (G.hintsHidden) {
-    hintsEl.classList.add('hidden');
-    toggleHintsBtn.textContent = 'Show';
-  } else {
-    hintsEl.classList.remove('hidden');
-    toggleHintsBtn.textContent = 'Hide';
-  }
-  
   renderBoard(); renderStrikes(); renderHints(); renderTray();
 }
 
@@ -731,10 +712,15 @@ soundBtn.addEventListener('click', () => {
 });
 
 toggleHintsBtn.addEventListener('click', () => {
-  hintsEl.classList.toggle('hidden');
-  G.hintsHidden = hintsEl.classList.contains('hidden');
-  toggleHintsBtn.textContent = G.hintsHidden ? 'Show' : 'Hide';
-  save();
+  const lis = hintsEl.querySelectorAll('li');
+  // Toggles all previously visible hints to hidden, and all previously hidden hints to visible
+  for (const li of lis) {
+    const btn = li.querySelector('.hint-toggle');
+    const isHidden = li.classList.toggle('hint-hidden');
+    if (btn) {
+      btn.textContent = isHidden ? 'Show' : 'Hide';
+    }
+  }
 });
 
 /* ================= init ================= */
