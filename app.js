@@ -210,14 +210,14 @@ function generatePuzzle(N) {
 
     const cells = [];
     for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) cells.push({ r, c });
-    const nRevealed = N === 4 ? 3 : N === 5 ? 4 : 5;   /* difficulty knob */
+    const nRevealed = N === 4 ? 3 : (N === 5 ? 4 : 5);   /* difficulty knob */
     const revealed = shuffle(cells).slice(0, nRevealed)
       .map(p => ({ r: p.r, c: p.c, s: sol[p.r][p.c] }));
 
     const hints = [];
     let res = propagate(N, revealed, hints);
     let steps = 0;
-    const maxSteps = N === 4 ? 14 : 24;
+    const maxSteps = N === 4 ? 14 : (N === 5 ? 19 : 24);
 
     while (!res.solved && steps < maxSteps) {
       steps++;
