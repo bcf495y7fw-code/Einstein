@@ -173,7 +173,6 @@ function candidateHints(N, sol, existing) {
         if (i < j) push({ type: 'same', a, b });
       } else {
         if (ca < cb) push({ type: 'left', a, b });
-        if (ca > cb) push({ type: 'right', a, b });
         if (i < j) {
           push({ type: 'notsame', a, b });
           if (Math.abs(ca - cb) === 1) push({ type: Math.random() < 0.5 ? 'next' : 'adj', a, b });
@@ -196,7 +195,7 @@ function candidateHints(N, sol, existing) {
   return out;
 }
 
-const HINT_BASE = { same: 1, left: 1, right: 1, next: 1, adj: 1, dist2: 0.8, between: 1.15, notsame: 0.55, first: 0.35, last: 0.35 };
+const HINT_BASE = { same: 1, left: 1, next: 1, adj: 1, dist2: 0.8, between: 1.15, notsame: 0.55, first: 0.35, last: 0.35 };
 
 function generatePuzzle(N) {
   const validIndices = [];
