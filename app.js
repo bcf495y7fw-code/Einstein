@@ -532,31 +532,26 @@ function renderStrikes() {
 
 function renderHints() {
   hintsEl.innerHTML = '';
-  for (const h of G.hints) {
+  G.hints.forEach((h, i) => {
     const li = document.createElement('li');
-    
+
+    /* the whole row is the hide control */
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'hint-row';
+    row.setAttribute('aria-label', `Hide hint ${i + 1}: ${hintAria(h)}`);
+
     const content = document.createElement('span');
     content.className = 'hint-content';
     for (const part of hintParts(h)) {
       content.appendChild(typeof part === 'string' ? document.createTextNode(part) : part);
     }
-    
-    const btn = document.createElement('button');
-    btn.className = 'btn hint-toggle';
-    btn.type = 'button';
-    btn.textContent = 'Hide';
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      // Hides the whole hint including the button, and removes space
-      li.classList.add('hint-hidden');
-      btn.textContent = 'Show';
-    });
-    
-    li.appendChild(content);
-    li.appendChild(btn);
-    li.setAttribute('aria-label', hintAria(h));
+    row.appendChild(content);
+    row.addEventListener('click', () => li.classList.add('hint-hidden'));
+
+    li.appendChild(row);
     hintsEl.appendChild(li);
-  }
+  });
 }
 
 function renderTray() {
