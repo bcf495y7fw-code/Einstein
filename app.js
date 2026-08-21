@@ -13,7 +13,6 @@ function shuffle(a) {
 }
 
 /* ================= symbol sets ================= */
-/* For a 4×4 board a random 4 of these sets is used; 6×6 uses all six. */
 
 const SETS = [
   { id: 'num', kind: 'number', glyphs: ['1', '2', '3', '4', '5', '6'],
@@ -211,7 +210,7 @@ function generatePuzzle(N) {
 
     const cells = [];
     for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) cells.push({ r, c });
-    const nRevealed = N === 4 ? 3 : 5;   /* difficulty knob */
+    const nRevealed = N === 4 ? 3 : N === 5 ? 4 : 5;   /* difficulty knob */
     const revealed = shuffle(cells).slice(0, nRevealed)
       .map(p => ({ r: p.r, c: p.c, s: sol[p.r][p.c] }));
 
@@ -317,7 +316,7 @@ function isValidCell(j, v) {
 
 function isValidSave(j) {
   if (!j || j.v !== 1 || j.done) return false;
-  if (!Number.isInteger(j.N) || ![4, 6].includes(j.N)) return false;
+  if (!Number.isInteger(j.N) || ![4, 5, 6].includes(j.N)) return false;
 
   if (!Array.isArray(j.sets) || j.sets.length !== j.N) return false;
   for (const idx of j.sets) {
