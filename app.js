@@ -534,22 +534,23 @@ function renderHints() {
   hintsEl.innerHTML = '';
   G.hints.forEach((h, i) => {
     const li = document.createElement('li');
-
-    /* the whole row is the hide control */
-    const row = document.createElement('button');
-    row.type = 'button';
-    row.className = 'hint-row';
-    row.setAttribute('aria-label', `Hide hint ${i + 1}: ${hintAria(h)}`);
+    li.setAttribute('role', 'button');
+    li.setAttribute('tabindex', '0');
+    li.setAttribute('aria-label', `Hide hint ${i + 1}: ${hintAria(h)}`);
 
     const content = document.createElement('span');
     content.className = 'hint-content';
     for (const part of hintParts(h)) {
       content.appendChild(typeof part === 'string' ? document.createTextNode(part) : part);
     }
-    row.appendChild(content);
-    row.addEventListener('click', () => li.classList.add('hint-hidden'));
+    li.appendChild(content);
 
-    li.appendChild(row);
+    const hide = () => li.classList.add('hint-hidden');
+    li.addEventListener('click', hide);
+    li.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hide(); }
+    });
+
     hintsEl.appendChild(li);
   });
 }
