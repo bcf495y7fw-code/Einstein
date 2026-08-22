@@ -136,11 +136,12 @@ function supported(vars, vi, x, dom, h, N) {
       let bad = false;
       for (let j = 0; j < vars.length; j++) {
         if (j === i || assign[j] === undefined) continue;
-        if (vars[j].r === v.r && assign[j] === y) { bad = true; break; }  /* same row ⇒ distinct columns */
+        if (vars[j].r === v.r && assign[j] === y) { bad = true; break; }
       }
       if (bad) continue;
       assign[i] = y;
       if (rec(k + 1)) return true;
+      assign[i] = undefined;
     }
     return false;
   };
