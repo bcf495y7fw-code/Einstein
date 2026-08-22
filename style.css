@@ -212,7 +212,7 @@ main { max-width: 980px; margin: 0 auto; }
   flex-wrap: wrap;
   justify-content: center;
   gap: 14px;
-  min-width: 100px;
+  min-width: 200px;
   max-width: 500px;
   margin: 0 auto;
 }
