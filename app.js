@@ -121,7 +121,7 @@ function supported(vars, vi, x, dom, h, N) {
       case 'same':    return ca === cb;
       case 'left':    return ca < cb;
       case 'right':   return ca > cb;
-      case 'next':    return Math.abs(ca - cb) === 1;
+      case 'next':
       case 'adj':     return Math.abs(ca - cb) === 1;
       case 'dist2':   return Math.abs(ca - cb) === 2;
       case 'between': return (cb === ca - 1 && cc === ca + 1) || (cc === ca - 1 && cb === ca + 1);
