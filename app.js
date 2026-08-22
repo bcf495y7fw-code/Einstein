@@ -258,7 +258,6 @@ function countSolutions(N, revealed, hints, cap) {
 function generatePuzzle(N) {
   const validIndices = [];
   for (let i = 0; i < SETS.length; i++) {
-    if (noColors && SETS[i].id === 'col') continue;
     if (!SETS[i].maxN || SETS[i].maxN >= N) validIndices.push(i);
   }
   const sets = shuffle(validIndices).slice(0, N);
