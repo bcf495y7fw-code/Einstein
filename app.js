@@ -15,23 +15,26 @@ function shuffle(a) {
 /* ================= symbol sets ================= */
 
 const SETS = [
-  { id: 'num', kind: 'number', glyphs: ['1', '2', '3', '4', '5', '6'],
-    names: ['one', 'two', 'three', 'four', 'five', 'six'] },
-  { id: 'ltr', kind: 'letter', glyphs: ['A', 'B', 'C', 'D', 'E', 'F'],
-    names: ['A', 'B', 'C', 'D', 'E', 'F'] },
-  { id: 'op',  kind: 'sign',   glyphs: ['+', '−', '×', '÷', '=', '≠'],
-    names: ['plus', 'minus', 'times', 'divided by', 'equals', 'not equals'] },
-  { id: 'shp', kind: 'shape',  glyphs: ['●', '▲', '■', '▼', '★', '⬟'],
-    names: ['circle', 'triangle', 'square', 'down triangle', 'star', 'pentagon'] },
-  { id: 'grk', kind: 'letter', glyphs: ['α', 'β', 'γ', 'δ', 'ε', 'η'],
-    names: ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'eta'] },
-  { id: 'col', kind: 'color',  glyphs: null,
-    colors: ['#cf8b8b', '#d9a06b', '#cdb45f', '#8ab87f', '#7fa3c9', '#a08bc4'],
-    names: ['red', 'orange', 'yellow', 'green', 'blue', 'violet'] },
-  { id: 'cur', kind: 'currency', glyphs: ['€', '$', '¥', '£', '₹', '₩'],
-    names: ['euro', 'dollar', 'yen', 'pound', 'rupee', 'won'] },
-  { id: 'crd', kind: 'card', glyphs: ['♠', '♥', '♦', '♣'],
-    names: ['spades', 'hearts', 'diamonds', 'clubs'], maxN: 4 },
+  { id: 'num', kind: 'number', glyphs: ['1', '2', '3', '4', '5', '6', '7', '8'],
+    names: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'] },
+
+  { id: 'ltr', kind: 'letter', glyphs: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    names: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] },
+
+  { id: 'op',  kind: 'sign',   glyphs: ['+', '−', '×', '/', '=', '≠', '<', '>'],
+    names: ['plus', 'minus', 'times', 'divided by', 'equals', 'not equals', 'less than', 'greater than'] },
+
+  { id: 'shp', kind: 'shape',  glyphs: ['●', '▲', '■', '◆', '★', '⬟', '✦', '⬢'],
+    names: ['circle', 'triangle', 'square', 'diamond', 'star', 'pentagon', 'four point star', 'hexagon'] },
+
+  { id: 'grk', kind: 'letter', glyphs: ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ'],
+    names: ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta'] },
+
+  { id: 'cur', kind: 'currency', glyphs: ['€', '$', '¥', '£', '₹', '₩', '₽', '₺'],
+    names: ['euro', 'dollar', 'yen', 'pound', 'rupee', 'won', 'ruble', 'lira'] },
+
+  { id: 'crd', kind: 'card', glyphs: ['♠', '♥', '♦', '♣', '♤', '♡', '♢', '♧'],
+    names: ['spades', 'hearts', 'diamonds', 'clubs', 'spade outline', 'heart outline', 'diamond outline', 'club outline'] },
 ];
 
 /* ================= solver =================
