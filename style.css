@@ -15,9 +15,9 @@
   --c-op:  #e4efe5;
   --c-shp: #f6e9de;
   --c-grk: #f1edda;
-  --c-col: transparent;
   --c-cur: #fcf3cf;
   --c-crd: #fadbd8;
+  --c-rom: #e9e7e1;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -35,9 +35,9 @@
     --c-op:  #232e26;
     --c-shp: #322a23;
     --c-grk: #2f2d21;
-    --c-col: transparent;
     --c-cur: #3a341c;
     --c-crd: #362222;
+    --c-rom: #2b2a27;
   }
 }
 
@@ -147,9 +147,9 @@ main { max-width: 980px; margin: 0 auto; }
 .set-op  { background: var(--c-op); }
 .set-shp { background: var(--c-shp); }
 .set-grk { background: var(--c-grk); }
-.set-col { background: var(--c-col); }
 .set-cur { background: var(--c-cur); }
 .set-crd { background: var(--c-crd); }
+.set-rom { background: var(--c-rom); }
 
 .tray-chip {
   width: 46px; height: 46px; min-width: 46px; padding: 0;
