@@ -377,7 +377,7 @@ function isValidCell(j, v) {
 
 function isValidSave(j) {
   if (!j || j.v !== 1 || j.done) return false;
-  if (!Number.isInteger(j.N) || ![4, 5, 6, 7].includes(j.N)) return false;
+  if (!Number.isInteger(j.N) || ![4, 5, 6, 7, 8].includes(j.N)) return false;
 
   if (!Array.isArray(j.sets) || j.sets.length !== j.N) return false;
   for (const idx of j.sets) {
