@@ -159,6 +159,25 @@ main { max-width: 980px; margin: 0 auto; }
 .tray-chip.used { opacity: 0.25; cursor: default; }
 .tray-chip:not(.used):active { transform: scale(0.94); }
 
+.wrong-guess {
+  position: relative;
+  opacity: 0.5;
+  pointer-events: none; /* Failsafe to block clicks on older browsers */
+}
+
+.wrong-guess::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  width: 70%;
+  height: 3px;
+  background-color: #ff4444; /* Red strike-through */
+  transform: translateY(-50%) rotate(-35deg);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
 /* ---------- hints ---------- */
 .hints-wrap { max-width: 540px; margin: 28px auto 0; }
 .hints-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
