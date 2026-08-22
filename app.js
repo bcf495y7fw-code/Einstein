@@ -37,6 +37,25 @@ const SETS = [
     names: ['spades', 'hearts', 'diamonds', 'clubs', 'spade outline', 'heart outline', 'diamond outline', 'club outline'] },
 ];
 
+/* ================= hint rules ================= */
+
+function evalHint(type, ca, cb, cc, N) {
+  switch (type) {
+    case 'same':    return ca === cb;
+    case 'left':    return ca < cb;
+    case 'right':   return ca > cb;
+    case 'next':
+    case 'adj':     return Math.abs(ca - cb) === 1;
+    case 'dist2':   return Math.abs(ca - cb) === 2;
+    case 'between': return (cb === ca - 1 && cc === ca + 1) ||
+                           (cc === ca - 1 && cb === ca + 1);
+    case 'notsame': return ca !== cb;
+    case 'first':   return ca === 0;
+    case 'last':    return ca === N - 1;
+  }
+  return false;
+}
+
 /* ================= solver =================
    dom[row][symbol] = list of possible columns.
    Every pruning step is sound (never removes a value present in any valid
@@ -115,21 +134,9 @@ function supported(vars, vi, x, dom, h, N) {
   const others = [];
   for (let i = 0; i < vars.length; i++) if (i !== vi) others.push(i);
 
-  const okAssign = () => {
-    const ca = assign[0], cb = assign[1], cc = assign[2];
-    switch (h.type) {
-      case 'same':    return ca === cb;
-      case 'left':    return ca < cb;
-      case 'right':   return ca > cb;
-      case 'next':
-      case 'adj':     return Math.abs(ca - cb) === 1;
-      case 'dist2':   return Math.abs(ca - cb) === 2;
-      case 'between': return (cb === ca - 1 && cc === ca + 1) || (cc === ca - 1 && cb === ca + 1);
-      case 'notsame': return ca !== cb;
-      case 'first':   return ca === 0;
-      case 'last':    return ca === N - 1;
-    }
-    return false;
+  const okAssign = () => {    
+    const ca = assign[0], cb = assign[1], cc = assign[2];    
+    return evalHint(h.type, ca, cb, cc, N);
   };
 
   const rec = k => {
@@ -207,19 +214,7 @@ function hintOk(h, pos, N) {
   const ca = pos[h.a.r][h.a.s];
   const cb = h.b ? pos[h.b.r][h.b.s] : 0;
   const cc = h.c ? pos[h.c.r][h.c.s] : 0;
-  switch (h.type) {
-    case 'same':    return ca === cb;
-    case 'left':    return ca < cb;
-    case 'right':   return ca > cb;
-    case 'next':
-    case 'adj':     return Math.abs(ca - cb) === 1;
-    case 'dist2':   return Math.abs(ca - cb) === 2;
-    case 'between': return (cb === ca - 1 && cc === ca + 1) || (cc === ca - 1 && cb === ca + 1);
-    case 'notsame': return ca !== cb;
-    case 'first':   return ca === 0;
-    case 'last':    return ca === N - 1;
-  }
-  return false;
+  return evalHint(h.type, ca, cb, cc, N);
 }
 
 /* Counts grids satisfying revealed + hints, stopping at `cap`.
