@@ -666,6 +666,29 @@ function onCell(r, c) {
   updateSel();
 }
 
+function autoFillLastCell(r) {
+  const filled = G.revealed.concat(G.placed).filter(v => v.r === r);
+  if (filled.length === G.N - 1) {
+    const used = new Set(filled.map(v => v.s));
+    let missingS = -1;
+    for (let i = 0; i < G.N; i++) if (!used.has(i)) { missingS = i; break; }
+      
+    let emptyC = -1;
+    for (let i = 0; i < G.N; i++) {
+      if (!filled.find(v => v.c === i)) { emptyC = i; break; }
+    }
+      
+    // Place the missing symbol automatically
+    if (missingS !== -1 && emptyC !== -1) {
+      G.placed.push({ r, c: emptyC, s: missingS });
+      const autoCell = cellAt(r, emptyC);
+      autoCell.classList.add('filled', 'pop');
+      fillCell(autoCell, r, missingS);
+      sounds.ok();
+    }
+  }
+}
+
 function attempt(r, c, s) {
   if (!G || G.done) return;
   if (G.sol[r][c] === s) {
@@ -675,6 +698,7 @@ function attempt(r, c, s) {
     cell.classList.add('filled', 'pop');
     fillCell(cell, r, s);
     sounds.ok();
+    autoFillLastCell(r);
     updateSel();
     save();
     if (G.placed.length + G.revealed.length === G.N * G.N) win();
