@@ -211,48 +211,6 @@ function candidateHints(N, sol, existing) {
 
 const HINT_BASE = { same: 1, left: 1, next: 1, adj: 1, dist2: 0.8, between: 1.15, notsame: 0.55, first: 0.35, last: 0.35 };
 
-/* ================= exact uniqueness check ================= */
-
-function hintOk(h, pos, N) {
-  const ca = pos[h.a.r][h.a.s];
-  const cb = h.b ? pos[h.b.r][h.b.s] : 0;
-  const cc = h.c ? pos[h.c.r][h.c.s] : 0;
-  return evalHint(h.type, ca, cb, cc, N);
-}
-
-/* Counts grids satisfying revealed + hints, stopping at `cap`.
-   Independent of propagate(): this is the ground truth. */
-function countSolutions(N, revealed, hints, cap) {
-  const pos = Array.from({ length: N }, () => new Array(N).fill(-1));
-  const used = Array.from({ length: N }, () => new Array(N).fill(false));
-  for (const rv of revealed) { pos[rv.r][rv.s] = rv.c; used[rv.r][rv.c] = true; }
-  let count = 0;
-
-  const okSoFar = () => {
-    for (const h of hints) {
-      const vars = [h.a, h.b, h.c].filter(Boolean);
-      if (vars.some(v => pos[v.r][v.s] === -1)) continue;
-      if (!hintOk(h, pos, N)) return false;
-    }
-    return true;
-  };
-
-  const rec = (r, s) => {
-    if (count >= cap) return;
-    if (r === N) { count++; return; }
-    if (s === N) { rec(r + 1, 0); return; }
-    if (pos[r][s] !== -1) { rec(r, s + 1); return; }
-    for (let c = 0; c < N; c++) {
-      if (used[r][c]) continue;
-      pos[r][s] = c; used[r][c] = true;
-      if (okSoFar()) rec(r, s + 1);
-      pos[r][s] = -1; used[r][c] = false;
-    }
-  };
-  rec(0, 0);
-  return count;
-}
-
 function generatePuzzle(N) {
   const validIndices = [];
   for (let i = 0; i < SETS.length; i++) {
@@ -299,7 +257,6 @@ function generatePuzzle(N) {
         if (propagate(N, revealed, fewer).solved) { hints.splice(i, 1); dropped = true; break; }
       }
     }
-    if (countSolutions(N, revealed, hints, 2) !== 1) continue;
     return { v: 1, N, sets, sol, revealed, hints, placed: [], mistakes: 0, done: null };
   }
 
@@ -311,7 +268,7 @@ function generatePuzzle(N) {
   const revealed = [];
     for (const p of pool) {
     revealed.push({ r: p.r, c: p.c, s: sol[p.r][p.c] });
-    if (propagate(N, revealed, []).solved && countSolutions(N, revealed, [], 2) === 1) break;
+    if (propagate(N, revealed, []).solved) break;
   }
   return { v: 1, N, sets, sol, revealed, hints: [], placed: [], mistakes: 0, done: null };
 }
