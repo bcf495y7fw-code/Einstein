@@ -35,6 +35,9 @@ const SETS = [
 
   { id: 'crd', kind: 'card', glyphs: ['♠', '♥', '♦', '♣', '♤', '♡', '♢', '♧'],
     names: ['spades', 'hearts', 'diamonds', 'clubs', 'spade outline', 'heart outline', 'diamond outline', 'club outline'] },
+  
+  { id: 'rom', kind: 'roman numeral', glyphs: ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ', 'Ⅷ'],
+    names: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'] }
 ];
 
 /* ================= hint rules ================= */
