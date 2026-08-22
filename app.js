@@ -265,7 +265,7 @@ function generatePuzzle(N) {
 
     const cells = [];
     for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) cells.push({ r, c });
-    const nRevealed = N - 1;   /* difficulty knob */
+    const nRevealed = Math.max(N - 1, Math.round((N * N) / 6));  /* difficulty knob */
     const revealed = shuffle(cells).slice(0, nRevealed)
       .map(p => ({ r: p.r, c: p.c, s: sol[p.r][p.c] }));
 
