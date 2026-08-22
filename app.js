@@ -626,11 +626,12 @@ function renderTray() {
   const used = new Set();
   for (const v of G.revealed) if (v.r === r) used.add(v.s);
   for (const v of G.placed) if (v.r === r) used.add(v.s);
+  const wrongHere = (G.wrongGuesses || []).filter(v => v.r === r && v.c === c).map(v => v.s);
   for (let s = 0; s < G.N; s++) {
     const chip = makeChip(setIdx, s);
     chip.classList.add('tray-chip');
     chip.setAttribute('role', 'button');
-    if (used.has(s)) {
+    if (used.has(s) || wrongHere.includes(s)) {
       chip.classList.add('used');
       chip.setAttribute('aria-disabled', 'true');
     } else {
@@ -704,12 +705,15 @@ function attempt(r, c, s) {
     if (G.placed.length + G.revealed.length === G.N * G.N) win();
   } else {
     G.mistakes++;
+    if (!G.wrongGuesses) G.wrongGuesses = [];
+    G.wrongGuesses.push({ r, c, s });
     sounds.bad();
     const cell = cellAt(r, c);
     cell.classList.remove('shake');
     void cell.offsetWidth;
     cell.classList.add('shake');
     renderStrikes();
+    updateSel();
     save();
     if (G.mistakes >= MAX_MISTAKES) lose();
   }
