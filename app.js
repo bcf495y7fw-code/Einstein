@@ -325,13 +325,11 @@ const SKEY = 'einstein-pwa-v2';
 const OLD_SKEYS = ['einstein-pwa-v1'];
 
 const MKEY = 'einstein-pwa-sound';
-const CKEY = 'einstein-pwa-nocolors';
 const MAX_MISTAKES = 3;
 
 let G = null;       /* current game state */
 let sel = null;     /* selected cell {r, c} */
 let soundOn = true;
-let noColors = false;
 
 function save() {
   try {
@@ -451,7 +449,6 @@ const strikesEl = document.getElementById('strikes');
 const soundBtn  = document.getElementById('soundBtn');
 const newBtn    = document.getElementById('newBtn');
 const toggleHintsBtn = document.getElementById('toggleHints');
-const noColorsInput = document.getElementById('noColors');
 
 /* ================= sounds (synthesized, no assets) ================= */
 
@@ -799,11 +796,6 @@ soundBtn.addEventListener('click', () => {
   if (soundOn) sounds.tick();
 });
 
-noColorsInput.addEventListener('change', () => {
-  noColors = noColorsInput.checked;
-  try { localStorage.setItem(CKEY, noColors ? '1' : '0'); } catch (e) {}
-});
-
 toggleHintsBtn.addEventListener('click', () => {
   const lis = hintsEl.querySelectorAll('li');
   // Toggles all previously visible hints to hidden, and all previously hidden hints to visible
@@ -820,11 +812,6 @@ toggleHintsBtn.addEventListener('click', () => {
 
 function init() {
   clearOldSaves();
-
-  try {
-    noColors = localStorage.getItem(CKEY) === '1';
-  } catch (e) {}
-  noColorsInput.checked = noColors;
 
   soundBtn.classList.toggle('muted', !soundOn);
   soundBtn.setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off');
