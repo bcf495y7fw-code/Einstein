@@ -801,9 +801,6 @@ toggleHintsBtn.addEventListener('click', () => {
   for (const li of lis) {
     const btn = li.querySelector('.hint-toggle');
     const isHidden = li.classList.toggle('hint-hidden');
-    if (btn) {
-      btn.textContent = isHidden ? 'Show' : 'Hide';
-    }
   }
 });
 
