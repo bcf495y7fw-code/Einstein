@@ -631,8 +631,11 @@ function renderTray() {
     const chip = makeChip(setIdx, s);
     chip.classList.add('tray-chip');
     chip.setAttribute('role', 'button');
-    if (used.has(s) || wrongHere.includes(s)) {
+    if (used.has(s)) {
       chip.classList.add('used');
+      chip.setAttribute('aria-disabled', 'true');
+    } else if (wrongHere.includes(s)) {
+      chip.classList.add('wrong-guess');
       chip.setAttribute('aria-disabled', 'true');
     } else {
       chip.addEventListener('click', () => attempt(r, c, s));
