@@ -168,13 +168,12 @@ function hintKey(h) {
 }
 
 /* All statements true in the given solution — the pool the generator draws from. */
-function candidateHints(N, sol, existing) {
-  const have = new Set(existing.map(hintKey));
+function candidateHints(N, sol) {
   const out = [];
   const syms = [];
   for (let r = 0; r < N; r++) for (let s = 0; s < N; s++) syms.push({ r, s });
   const col = (r, s) => sol[r].indexOf(s);
-  const push = h => { const k = hintKey(h); if (!have.has(k)) { have.add(k); out.push(h); } };
+  const push = h => { out.push(h); };
 
   for (let i = 0; i < syms.length; i++) {
     const a = syms[i], ca = col(a.r, a.s);
@@ -223,7 +222,7 @@ function generatePuzzle(N) {
 
     const cells = [];
     for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) cells.push({ r, c });
-    const nRevealed = Math.max(N - 1, Math.round((N * N) / 6));  /* difficulty knob */
+    const nRevealed = Math.max(N - 1, Math.round((N * N) / 6));
     const revealed = shuffle(cells).slice(0, nRevealed)
       .map(p => ({ r: p.r, c: p.c, s: sol[p.r][p.c] }));
 
@@ -232,17 +231,31 @@ function generatePuzzle(N) {
     let steps = 0;
     const maxSteps = N * (N - 1);
 
+    // Precompute and sort all candidate hints once per attempt
+    const allCands = candidateHints(N, sol)
+      .map(h => ({ h, w: HINT_BASE[h.type] * (0.5 + Math.random()) }))
+      .sort((x, y) => y.w - x.w)
+      .map(o => o.h);
+
+    const usedHintKeys = new Set();
+    const isUsed = (h) => usedHintKeys.has(hintKey(h));
+
     while (!res.solved && steps < maxSteps) {
       steps++;
-      const cands = candidateHints(N, sol, hints)
-        .map(h => ({ h, w: HINT_BASE[h.type] * (0.5 + Math.random()) }))
-        .sort((x, y) => y.w - x.w)
-        .slice(0, 60)
-        .map(o => o.h);
       let added = false;
-      for (const h of cands) {
+      
+      // Iterate through the pre-sorted list, skipping already used hints
+      for (const h of allCands) {
+        if (isUsed(h)) continue;
+
         const r2 = propagate(N, revealed, hints.concat([h]));
-        if (r2.total < res.total) { hints.push(h); res = r2; added = true; break; }
+        if (r2.total < res.total) {
+          hints.push(h);
+          usedHintKeys.add(hintKey(h));
+          res = r2;
+          added = true;
+          break; // Found a useful hint; restart while loop to re-evaluate from the top
+        }
       }
       if (!added) break;
     }
@@ -266,7 +279,7 @@ function generatePuzzle(N) {
   for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) pool.push({ r, c });
   shuffle(pool);
   const revealed = [];
-    for (const p of pool) {
+  for (const p of pool) {
     revealed.push({ r: p.r, c: p.c, s: sol[p.r][p.c] });
     if (propagate(N, revealed, []).solved) break;
   }
