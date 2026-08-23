@@ -1,44 +1,81 @@
 /* ---------- theme ---------- */
 :root {
-  color-scheme: light dark;
-  --bg: #fafaf8;
-  --fg: #26272b;
-  --line: #e1e1dc;
-  --line2: #cfcfc8;
-  --faint: #efefeb;
-  --given: #f2f2ee;
-  --accent: #9db4cf;
-  --bad: #d9a0a0;
-  --ovl: rgba(250, 250, 248, 0.78);
-  --c-num: #e4ecf5;
-  --c-ltr: #ebe5f3;
-  --c-op:  #e4efe5;
-  --c-shp: #f6e9de;
-  --c-grk: #f1edda;
-  --c-cur: #fcf3cf;
-  --c-crd: #fadbd8;
-  --c-rom: #e9e7e1;
+  /* Light Palette */
+  --l-bg: #fafaf8; 
+  --l-fg: #26272b; 
+  --l-line: #e1e1dc; 
+  --l-line2: #cfcfc8;
+  --l-faint: #efefeb; 
+  --l-given: #f2f2ee; 
+  --l-accent: #9db4cf; 
+  --l-bad: #d9a0a0;
+  --l-ovl: rgba(250, 250, 248, 0.78);
+  --l-c-num: #e4ecf5; 
+  --l-c-ltr: #ebe5f3; 
+  --l-c-op: #e4efe5; 
+  --l-c-shp: #f6e9de;
+  --l-c-grk: #f1edda; 
+  --l-c-cur: #fcf3cf; 
+  --l-c-crd: #fadbd8; 
+  --l-c-rom: #e9e7e1;
+
+  /* Dark Palette */
+  --d-bg: #141517; 
+  --d-fg: #e6e6e3; 
+  --d-line: #2a2b2f; 
+  --d-line2: #3d3e43;
+  --d-faint: #1f2023; 
+  --d-given: #1d1e22; 
+  --d-accent: #7f99b8; 
+  --d-bad: #b57f7f;
+  --d-ovl: rgba(14, 15, 17, 0.78);
+  --d-c-num: #222b36; 
+  --d-c-ltr: #2a2634; 
+  --d-c-op: #232e26; 
+  --d-c-shp: #322a23;
+  --d-c-grk: #2f2d21; 
+  --d-c-cur: #3a341c; 
+  --d-c-crd: #362222; 
+  --d-c-rom: #2b2a27;
 }
+
+/* Default (Light) & Explicit Light Mode */
+:root, [data-theme="light"] {
+  color-scheme: light;
+  --bg: var(--l-bg); --fg: var(--l-fg); --line: var(--l-line); --line2: var(--l-line2);
+  --faint: var(--l-faint); --given: var(--l-given); --accent: var(--l-accent); --bad: var(--l-bad);
+  --ovl: var(--l-ovl);
+  --c-num: var(--l-c-num); --c-ltr: var(--l-c-ltr); --c-op: var(--l-c-op); --c-shp: var(--l-c-shp);
+  --c-grk: var(--l-c-grk); --c-cur: var(--l-c-cur); --c-crd: var(--l-c-crd); --c-rom: var(--l-c-rom);
+}
+
+/* Explicit Dark Mode */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--d-bg); --fg: var(--d-fg); --line: var(--d-line); --line2: var(--d-line2);
+  --faint: var(--d-faint); --given: var(--d-given); --accent: var(--d-accent); --bad: var(--d-bad);
+  --ovl: var(--d-ovl);
+  --c-num: var(--d-c-num); --c-ltr: var(--d-c-ltr); --c-op: var(--d-c-op); --c-shp: var(--d-c-shp);
+  --c-grk: var(--d-c-grk); --c-cur: var(--d-c-cur); --c-crd: var(--d-c-crd); --c-rom: var(--d-c-rom);
+}
+
+/* Auto Dark Mode (Follows OS, but ONLY if not explicitly forced to light) */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141517;
-    --fg: #e6e6e3;
-    --line: #2a2b2f;
-    --line2: #3d3e43;
-    --faint: #1f2023;
-    --given: #1d1e22;
-    --accent: #7f99b8;
-    --bad: #b57f7f;
-    --ovl: rgba(14, 15, 17, 0.78);
-    --c-num: #222b36;
-    --c-ltr: #2a2634;
-    --c-op:  #232e26;
-    --c-shp: #322a23;
-    --c-grk: #2f2d21;
-    --c-cur: #3a341c;
-    --c-crd: #362222;
-    --c-rom: #2b2a27;
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: var(--d-bg); --fg: var(--d-fg); --line: var(--d-line); --line2: var(--d-line2);
+    --faint: var(--d-faint); --given: var(--d-given); --accent: var(--d-accent); --bad: var(--d-bad);
+    --ovl: var(--d-ovl);
+    --c-num: var(--d-c-num); --c-ltr: var(--d-c-ltr); --c-op: var(--d-c-op); --c-shp: var(--d-c-shp);
+    --c-grk: var(--d-c-grk); --c-cur: var(--d-c-cur); --c-crd: var(--d-c-crd); --c-rom: var(--d-c-rom);
   }
+}
+
+/* Style the SVG inside the theme button */
+#themeBtn svg {
+  width: 24px; /* Adjust this if your soundBtn icon is a different size */
+  height: 24px;
+  fill: currentColor; /* Automatically uses the --fg text color! */
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
