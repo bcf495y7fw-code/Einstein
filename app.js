@@ -297,6 +297,7 @@ const SKEY = 'einstein-pwa-v2';
 const OLD_SKEYS = ['einstein-pwa-v1'];
 
 const MKEY = 'einstein-pwa-sound';
+const THEME_KEY = 'einstein-theme';
 const MAX_MISTAKES = 3;
 
 let G = null;       /* current game state */
@@ -419,6 +420,7 @@ const ovSub     = document.getElementById('ovSub');
 const ovBtn     = document.getElementById('ovBtn');
 const strikesEl = document.getElementById('strikes');
 const soundBtn  = document.getElementById('soundBtn');
+const themeBtn  = document.getElementById('themeBtn');
 const newBtn    = document.getElementById('newBtn');
 const toggleHintsBtn = document.getElementById('toggleHints');
 
@@ -765,6 +767,39 @@ function newPuzzle(N) {
   save();
 }
 
+/* ================= theme ================= */
+
+const themeIcons = {
+  auto: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>`,
+  light: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>`,
+  dark: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>`
+};
+const themeCycle = ['auto', 'light', 'dark'];
+
+function applyTheme(theme) {
+  if (theme === 'auto') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+  
+  if (themeBtn) {
+    themeBtn.innerHTML = themeIcons[theme];
+    themeBtn.setAttribute('aria-label', `Theme: ${theme} mode`);
+  }
+  
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (e) {}
+}
+
+function cycleTheme() {
+  const currentTheme = localStorage.getItem(THEME_KEY) || 'auto';
+  const currentIndex = themeCycle.indexOf(currentTheme);
+  const nextIndex = (currentIndex + 1) % themeCycle.length;
+  applyTheme(themeCycle[nextIndex]);
+}
+
 /* ================= wiring ================= */
 
 document.querySelectorAll('.menu-btn').forEach(b => {
@@ -787,6 +822,8 @@ soundBtn.addEventListener('click', () => {
   if (soundOn) sounds.tick();
 });
 
+themeBtn.addEventListener('click', cycleTheme);
+
 toggleHintsBtn.addEventListener('click', () => {
   const lis = hintsEl.querySelectorAll('li');
   // Toggles all previously visible hints to hidden, and all previously hidden hints to visible
@@ -803,6 +840,9 @@ function init() {
 
   soundBtn.classList.toggle('muted', !soundOn);
   soundBtn.setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off');
+
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'auto';
+  applyTheme(savedTheme);
 
   if ('ResizeObserver' in window) {
     new ResizeObserver(fitBoard).observe(boardEl);
