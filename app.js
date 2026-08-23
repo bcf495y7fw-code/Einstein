@@ -226,7 +226,7 @@ function generatePuzzle(N) {
 
     const cells = [];
     for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) cells.push({ r, c });
-    const nRevealed = Math.max(N - 1, Math.round((N * N) / 6));
+    const nRevealed = Math.max(N - 1, Math.round((N * N) / 5));
     const revealed = shuffle(cells).slice(0, nRevealed)
       .map(p => ({ r: p.r, c: p.c, s: sol[p.r][p.c] }));
 
@@ -235,7 +235,7 @@ function generatePuzzle(N) {
     // Start with a base state
     let res = { solved: false, total: N * N * N, dom: null };
     let steps = 0;
-    const maxSteps = N * (N - 1);
+    const maxSteps = N * N;
 
     const allCands = candidateHints(N, sol)
       .map(h => ({ h, w: HINT_BASE[h.type] * (0.5 + Math.random()) }))
