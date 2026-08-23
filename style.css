@@ -73,8 +73,8 @@
 
 /* Style the SVG inside the theme button */
 #themeBtn svg {
-  width: 24px; /* Adjust this if your soundBtn icon is a different size */
-  height: 24px;
+  width: 20px;
+  height: 20px;
   fill: currentColor; /* Automatically uses the --fg text color! */
 }
 
