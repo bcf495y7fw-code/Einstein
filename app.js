@@ -65,9 +65,13 @@ function evalHint(type, ca, cb, cc, N) {
    solution), so if propagation reaches all-singleton domains, the puzzle
    has exactly one solution and it is derivable purely by logic. */
 
-function propagate(N, revealed, hints) {
-  const dom = Array.from({ length: N }, () => Array.from({ length: N }, () => range(N)));
-  const fail = { solved: false, total: N * N * N };
+function propagate(N, revealed, hints, initialDom = null) {
+  // Deep clone the starting domain, or create a fresh one if this is the first run
+  const dom = initialDom 
+    ? initialDom.map(row => row.map(col => [...col])) 
+    : Array.from({ length: N }, () => Array.from({ length: N }, () => range(N)));
+    
+  const fail = { solved: false, total: N * N * N, dom };
   let changed = true;
 
   const applyReveals = () => {
@@ -112,7 +116,7 @@ function propagate(N, revealed, hints) {
     total += dom[r][s].length;
     if (dom[r][s].length !== 1) solved = false;
   }
-  return { solved, total };
+  return { solved, total, dom }; // <-- NOW RETURNS THE DOM FOR REUSE
 }
 
 function pruneHint(N, dom, h) {
@@ -227,11 +231,12 @@ function generatePuzzle(N) {
       .map(p => ({ r: p.r, c: p.c, s: sol[p.r][p.c] }));
 
     const hints = [];
-    let res = propagate(N, revealed, hints);
+    
+    // Start with a base state
+    let res = { solved: false, total: N * N * N, dom: null };
     let steps = 0;
     const maxSteps = N * (N - 1);
 
-    // Precompute and sort all candidate hints once per attempt
     const allCands = candidateHints(N, sol)
       .map(h => ({ h, w: HINT_BASE[h.type] * (0.5 + Math.random()) }))
       .sort((x, y) => y.w - x.w)
@@ -244,32 +249,32 @@ function generatePuzzle(N) {
       steps++;
       let added = false;
       
-      // Iterate through the pre-sorted list, skipping already used hints
       for (const h of allCands) {
         if (isUsed(h)) continue;
 
-        const r2 = propagate(N, revealed, hints.concat([h]));
+        // Pass the current best `dom` to avoid rebuilding from scratch!
+        const r2 = propagate(N, revealed, hints.concat([h]), res.dom);
+        
         if (r2.total < res.total) {
           hints.push(h);
           usedHintKeys.add(hintKey(h));
-          res = r2;
+          res = r2; // Save the new state, including the heavily-reduced `dom`
           added = true;
-          break; // Found a useful hint; restart while loop to re-evaluate from the top
+          break; 
         }
       }
       if (!added) break;
     }
+    
     if (!res.solved) continue;
 
-    /* drop redundant hints, keeping the set short */
-    let dropped = true;
-    while (dropped) {
-      dropped = false;
-      for (let i = 0; i < hints.length; i++) {
-        const fewer = hints.filter((_, k) => k !== i);
-        if (propagate(N, revealed, fewer).solved) { hints.splice(i, 1); dropped = true; break; }
+    for (let i = hints.length - 1; i >= 0; i--) {
+      const fewer = hints.filter((_, k) => k !== i);
+      if (propagate(N, revealed, fewer).solved) {
+        hints.splice(i, 1);
       }
     }
+    
     return { v: 1, N, sets, sol, revealed, hints, placed: [], mistakes: 0, done: null };
   }
 
