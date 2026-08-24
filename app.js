@@ -635,6 +635,38 @@ function fitBoard() {
   boardEl.style.setProperty('--cellsw', Math.round(w * 0.5) + 'px');
 }
 
+function restoreHintOpacities() {
+  if (!G || !hintsEl.children.length) return;
+  
+  const lis = Array.from(hintsEl.querySelectorAll('li'));
+  const active = [];
+  const dimmed = [];
+
+  for (const li of lis) {
+    const i = parseInt(li.dataset.hintIndex, 10);
+    const h = G.hints[i];
+    if (!h) continue;
+
+    const symsInHint = [h.a, h.b, h.c].filter(Boolean);
+    const allOnBoard = symsInHint.every(sym => 
+      G.revealed.some(v => v.r === sym.r && v.s === sym.s) || 
+      G.placed.some(v => v.r === sym.r && v.s === sym.s)
+    );
+
+    if (allOnBoard) {
+      li.style.opacity = '0.5';
+      dimmed.push(li);
+    } else {
+      li.style.opacity = ''; // Reset in case it was somehow altered
+      active.push(li);
+    }
+  }
+
+  // Re-append existing nodes in the correct order (highly efficient, no innerHTML rebuild)
+  for (const li of active) hintsEl.appendChild(li);
+  for (const li of dimmed) hintsEl.appendChild(li);
+}
+
 /* ================= interaction ================= */
 
 function cellAt(r, c) { return boardEl.children[r * G.N + c]; }
@@ -872,6 +904,7 @@ function init() {
 
   try {
     saved = loadSave();
+    restoreHintOpacities();
   } catch (e) {
     saved = null;
     clearSave();
