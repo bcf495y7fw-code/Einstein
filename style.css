@@ -220,7 +220,6 @@ main { max-width: 980px; margin: 0 auto; }
 .hints-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .hints-header h2 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.5; }
 #toggleHints { padding: 4px 10px; font-size: 12px; }
-.hints-sub { margin: 0 0 10px; font-size: 13px; opacity: 0.45; }
 
 #hints { list-style: none; margin: 0; padding: 0; }
 #hints li {
@@ -229,16 +228,9 @@ main { max-width: 980px; margin: 0 auto; }
   cursor: pointer;
 }
 #hints li:first-child { border-top: none; }
-#hints li.hint-hidden { display: none; }
 
 .hint-content {
   flex: 1 1 auto;
-}
-
-.hint-toggle {
-  padding: 4px 10px;
-  font-size: 12px;
-  flex-shrink: 0;
 }
 
 /* ---------- menu ---------- */
