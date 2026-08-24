@@ -783,9 +783,16 @@ function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
   }
   
-  if (themeBtn) {
-    themeBtn.innerHTML = themeIcons[theme];
-    themeBtn.setAttribute('aria-label', `Theme: ${theme} mode`);
+  themeBtn.innerHTML = themeIcons[theme];
+  themeBtn.setAttribute('aria-label', `Theme: ${theme} mode`);
+  
+  const activeBg = getComputedStyle(document.documentElement)
+    .getPropertyValue('--bg')
+    .trim();
+    
+  const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+  if (metaThemeColor && activeBg) {
+    metaThemeColor.content = activeBg;
   }
   
   try {
