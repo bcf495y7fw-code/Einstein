@@ -904,7 +904,6 @@ function init() {
 
   try {
     saved = loadSave();
-    restoreHintOpacities();
   } catch (e) {
     saved = null;
     clearSave();
@@ -913,6 +912,7 @@ function init() {
   if (saved) {
     try {
       startGame(saved);
+      restoreHintOpacities();
     } catch (err) {
       console.error('Discarding corrupted saved game:', err);
       clearSave();
