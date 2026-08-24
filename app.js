@@ -564,6 +564,9 @@ function renderHints() {
   hintsEl.innerHTML = '';
   G.hints.forEach((h, i) => {
     const li = document.createElement('li');
+
+    li.dataset.hintIndex = i; 
+    
     li.setAttribute('role', 'button');
     li.setAttribute('tabindex', '0');
     li.setAttribute('aria-label', `Hide hint ${i + 1}: ${hintAria(h)}`);
@@ -680,20 +683,28 @@ function attempt(r, c, s) {
     updateSel();
     save();
 
-    const lis = Array.from(hintsEl.children);
-    lis.forEach((li, index) => {
-      const h = G.hints[index];
-      if (!h) return;
-      const symsInHint = [h.a, h.b, h.c].filter(Boolean);    
-      const containsTarget = symsInHint.some(sym => sym.r === r && sym.s === s);            
+    G.hints.forEach((h, i) => {
+      const symsInHint = [h.a, h.b, h.c].filter(Boolean);
+      
+      // Check if this hint contains the exact symbol (row r, symbol index s) just placed
+      const containsTarget = symsInHint.some(sym => sym.r === r && sym.s === s);
+      
       if (containsTarget) {
+        // Check if ALL symbols in this hint are now on the board
         const allOnBoard = symsInHint.every(sym => 
           G.revealed.some(v => v.r === sym.r && v.s === sym.s) || 
-          G.placed.some(v => v.r === sym.r && v.s === sym.s) 
-                                           );
+          G.placed.some(v => v.r === sym.r && v.s === sym.s)
+        );
+        
         if (allOnBoard) {
-          li.style.opacity = '0.5';
-          hintsEl.appendChild(li);
+          // Find the exact DOM element using the data attribute
+          const li = hintsEl.querySelector(`li[data-hint-index="${i}"]`);
+          
+          // Only update and move if it hasn't been processed already
+          if (li && li.style.opacity !== '0.5') {
+            li.style.opacity = '0.5';
+            hintsEl.appendChild(li);
+          }
         }
       }
     });
