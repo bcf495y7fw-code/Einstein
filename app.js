@@ -422,7 +422,6 @@ const strikesEl = document.getElementById('strikes');
 const soundBtn  = document.getElementById('soundBtn');
 const themeBtn  = document.getElementById('themeBtn');
 const newBtn    = document.getElementById('newBtn');
-const toggleHintsBtn = document.getElementById('toggleHints');
 
 /* ================= sounds (synthesized, no assets) ================= */
 
@@ -567,9 +566,7 @@ function renderHints() {
 
     li.dataset.hintIndex = i; 
     
-    li.setAttribute('role', 'button');
-    li.setAttribute('tabindex', '0');
-    li.setAttribute('aria-label', `Hide hint ${i + 1}: ${hintAria(h)}`);
+    li.setAttribute('aria-label', hintAria(h));
 
     const content = document.createElement('span');
     content.className = 'hint-content';
@@ -577,12 +574,6 @@ function renderHints() {
       content.appendChild(typeof part === 'string' ? document.createTextNode(part) : part);
     }
     li.appendChild(content);
-
-    const hide = () => li.classList.add('hint-hidden');
-    li.addEventListener('click', hide);
-    li.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hide(); }
-    });
 
     hintsEl.appendChild(li);
   });
@@ -873,15 +864,6 @@ soundBtn.addEventListener('click', () => {
 });
 
 themeBtn.addEventListener('click', cycleTheme);
-
-toggleHintsBtn.addEventListener('click', () => {
-  const lis = hintsEl.querySelectorAll('li');
-  // Toggles all previously visible hints to hidden, and all previously hidden hints to visible
-  for (const li of lis) {
-    const btn = li.querySelector('.hint-toggle');
-    const isHidden = li.classList.toggle('hint-hidden');
-  }
-});
 
 /* ================= init ================= */
 
