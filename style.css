@@ -246,10 +246,8 @@ main { max-width: 980px; margin: 0 auto; }
   margin: 0 auto;
 }
 .menu-btn {
-  flex: 0 0 calc(25% - 10.5px); 
-  min-width: 90px;
-  
-  flex: 1; font: inherit; color: var(--fg);
+  flex: 0 0 calc(25% - 10.5px); min-width: 90px;
+  font: inherit; color: var(--fg);
   background: transparent; border: 1px solid var(--line2); border-radius: 12px;
   padding: 22px 10px; cursor: pointer;
   display: flex; flex-direction: column; align-items: center; gap: 6px;
