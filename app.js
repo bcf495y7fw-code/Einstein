@@ -670,6 +670,33 @@ function onCell(r, c) {
   updateSel();
 }
 
+function evaluateHintForSymbol(r, s) {
+  G.hints.forEach((h, i) => {
+    const symsInHint = [h.a, h.b, h.c].filter(Boolean);
+    
+    // Check if this hint contains the specific symbol just placed
+    const containsTarget = symsInHint.some(sym => sym.r === r && sym.s === s);
+    
+    if (containsTarget) {
+      // Check if ALL symbols in this hint are now on the board
+      const allOnBoard = symsInHint.every(sym => 
+        G.revealed.some(v => v.r === sym.r && v.s === sym.s) || 
+        G.placed.some(v => v.r === sym.r && v.s === sym.s)
+      );
+      
+      if (allOnBoard) {
+        const li = hintsEl.querySelector(`li[data-hint-index="${i}"]`);
+        
+        // Only update and move if it hasn't been processed already (Idempotent check)
+        if (li && li.style.opacity !== '0.5') {
+          li.style.opacity = '0.5';
+          hintsEl.appendChild(li);
+        }
+      }
+    }
+  });
+}
+
 function autoFillLastCell(r) {
   const filled = G.revealed.concat(G.placed).filter(v => v.r === r);
   if (filled.length === G.N - 1) {
@@ -688,7 +715,7 @@ function autoFillLastCell(r) {
       const autoCell = cellAt(r, emptyC);
       autoCell.classList.add('filled', 'pop');
       fillCell(autoCell, r, missingS);
-      sounds.ok();
+      evaluateHintForSymbol(r, missingS);
     }
   }
 }
@@ -702,35 +729,12 @@ function attempt(r, c, s) {
     cell.classList.add('filled', 'pop');
     fillCell(cell, r, s);
     sounds.ok();
+    
     autoFillLastCell(r);
     updateSel();
     save();
 
-    G.hints.forEach((h, i) => {
-      const symsInHint = [h.a, h.b, h.c].filter(Boolean);
-      
-      // Check if this hint contains the exact symbol (row r, symbol index s) just placed
-      const containsTarget = symsInHint.some(sym => sym.r === r && sym.s === s);
-      
-      if (containsTarget) {
-        // Check if ALL symbols in this hint are now on the board
-        const allOnBoard = symsInHint.every(sym => 
-          G.revealed.some(v => v.r === sym.r && v.s === sym.s) || 
-          G.placed.some(v => v.r === sym.r && v.s === sym.s)
-        );
-        
-        if (allOnBoard) {
-          // Find the exact DOM element using the data attribute
-          const li = hintsEl.querySelector(`li[data-hint-index="${i}"]`);
-          
-          // Only update and move if it hasn't been processed already
-          if (li && li.style.opacity !== '0.5') {
-            li.style.opacity = '0.5';
-            hintsEl.appendChild(li);
-          }
-        }
-      }
-    });
+    evaluateHintForSymbol(r, s);
     
     if (G.placed.length + G.revealed.length === G.N * G.N) win();
   } else {
