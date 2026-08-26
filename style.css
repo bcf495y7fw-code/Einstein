@@ -29,14 +29,14 @@
   --d-accent: #7f99b8; 
   --d-bad: #b57f7f;
   --d-ovl: rgba(14, 15, 17, 0.78);
-  --d-c-num: #222b36; 
-  --d-c-ltr: #2a2634; 
-  --d-c-op: #232e26; 
-  --d-c-shp: #322a23;
-  --d-c-grk: #2f2d21; 
-  --d-c-cur: #3a341c; 
-  --d-c-crd: #362222; 
-  --d-c-rom: #2b2a27;
+  --d-c-num: #3d5a80;
+  --d-c-ltr: #5a4d7a;
+  --d-c-op: #4d7a5a;
+  --d-c-shp: #805a3d;
+  --d-c-grk: #7a6d4d;
+  --d-c-cur: #3d7a7a;
+  --d-c-crd: #7a4d4d;
+  --d-c-rom: #5a5a5a;
 }
 
 /* Default (Light) & Explicit Light Mode */
