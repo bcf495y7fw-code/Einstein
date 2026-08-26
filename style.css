@@ -274,7 +274,8 @@ main { max-width: 61.25rem; margin: 0 auto; }
 .panel p { margin: 0 0 1.25rem; font-size: 0.875rem; opacity: 0.6; }
 
 /* ---------- wide layout (iPad / desktop) ---------- */
-@media (min-width: 57.5rem) {
+@media (min-width: 42rem) and (orientation: landscape),
+       (min-width: 57.5rem) {
   #game {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: 3.5rem; align-items: start;
