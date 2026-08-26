@@ -284,3 +284,10 @@ main { max-width: 61.25rem; margin: 0 auto; }
   #tray { grid-area: 2 / 1; justify-self: center; width: 100%; }
   .hints-wrap { grid-area: 1 / 2 / 3 / 2; margin-top: 0; max-width: none; }
 }
+
+@media (min-width: 42rem) and (orientation: landscape) {
+  #board {
+    width: min(100%, 33.75rem, calc(100vh - 7rem));
+    width: min(100%, 33.75rem, calc(100dvh - 7rem));
+  }
+}
