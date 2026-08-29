@@ -607,8 +607,10 @@ function updateLayout() {
   const N = G.N;
   
   gameEl.classList.remove('layout-stacked', 'layout-hints-right-tray-below', 'layout-hints-right-tray-right', 'layout-hints-below-tray-right');
+
+  let availW = gameEl.clientWidth;
+  if (!availW || availW <= 0) availW = 300; /* Fallback if measured while hidden */
   
-  const availW = gameEl.clientWidth;
   const headerEl = document.querySelector('header');
   const headerH = headerEl ? headerEl.offsetHeight : 60;
   const availH = window.innerHeight - headerH - 48; 
