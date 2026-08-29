@@ -279,8 +279,8 @@ main { max-width: 61.25rem; margin: 0 auto; }
        (min-width: 57.5rem) {
   #game {
     display: grid; 
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: min-content;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-rows: min-content auto;
     column-gap: 3.5rem; 
     align-items: start; 
   }
