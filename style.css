@@ -73,6 +73,8 @@
 [hidden] { display: none !important; }
 
 html, body { 
+  overflow-x: hidden;
+  width: 100%;
   margin: 0; padding: 0; 
   height: 100vh; height: 100dvh; 
   overflow: hidden; 
@@ -84,6 +86,15 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg); color: var(--fg);
   touch-action: manipulation;
+}
+
+main,
+#game,
+.left-col,
+.hints-wrap {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
 /* ---------- header ---------- */
