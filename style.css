@@ -277,12 +277,15 @@ main { max-width: 61.25rem; margin: 0 auto; }
 @media (min-width: 42rem) and (orientation: landscape),
        (min-width: 57.5rem) {
   #game {
-    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    column-gap: 3.5rem; align-items: start;
+    display: grid; 
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: min-content;
+    column-gap: 3.5rem; 
+    align-items: start;
   }
   #board { grid-area: 1 / 1; justify-self: center; }
   #tray { grid-area: 2 / 1; justify-self: center; width: 100%; }
-  .hints-wrap { grid-area: 1 / 2 / 3 / 2; margin-top: 0; max-width: none; }
+  .hints-wrap { grid-area: 1 / 2 / 3 / 3; margin-top: 0; max-width: none; }
 }
 
 @media (min-width: 42rem) and (orientation: landscape) {
