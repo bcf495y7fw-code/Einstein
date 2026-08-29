@@ -297,19 +297,12 @@ main { max-width: 61.25rem; margin: 0 auto; }
   }
 }
 
-/* ===== TEMPORARY GRID DEBUG ===== */
-#game {
-  column-gap: 2px !important;   /* override the 1.5rem gap */
-  row-gap: 2px !important;
-  background-color: rgba(255, 0, 0, 0.6);
-  outline: 2px solid blue;       /* outer edge of the grid */
+/* ===== TEMPORARY DEBUG ===== */
+#board {
+  box-shadow: 0 3px 0 0 red !important;   /* board's natural bottom */
 }
-
-#game > * {
-  outline: 1px dashed green;    /* item boundaries */
-  background-color: var(--bg);  /* opaque so items cover the red */
+#tray {
+  align-self: stretch !important;          /* fill row 2 */
+  outline: 2px solid blue !important;      /* all four edges of row 2 */
 }
-
-/* ===== END DEBUG ===== */
-
 /* ===== END DEBUG ===== */
