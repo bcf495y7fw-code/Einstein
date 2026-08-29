@@ -59,14 +59,9 @@ function evalHint(type, ca, cb, cc, N) {
   return false;
 }
 
-/* ================= solver =================
-   dom[row][symbol] = list of possible columns.
-   Every pruning step is sound (never removes a value present in any valid
-   solution), so if propagation reaches all-singleton domains, the puzzle
-   has exactly one solution and it is derivable purely by logic. */
+/* ================= solver ================= */
 
 function propagate(N, revealed, hints, initialDom = null) {
-  // Deep clone the starting domain, or create a fresh one if this is the first run
   const dom = initialDom 
     ? initialDom.map(row => row.map(col => [...col])) 
     : Array.from({ length: N }, () => Array.from({ length: N }, () => range(N)));
@@ -88,7 +83,6 @@ function propagate(N, revealed, hints, initialDom = null) {
     if (!applyReveals()) return fail;
 
     for (let r = 0; r < N; r++) {
-      /* naked singles: a fixed symbol removes its column from row mates */
       for (let s = 0; s < N; s++) {
         if (dom[r][s].length === 1) {
           const c = dom[r][s][0];
@@ -99,7 +93,6 @@ function propagate(N, revealed, hints, initialDom = null) {
           }
         }
       }
-      /* hidden singles: a column possible for only one symbol */
       for (let c = 0; c < N; c++) {
         let holder = -1, count = 0;
         for (let s = 0; s < N; s++) if (dom[r][s].includes(c)) { count++; holder = s; }
@@ -116,7 +109,7 @@ function propagate(N, revealed, hints, initialDom = null) {
     total += dom[r][s].length;
     if (dom[r][s].length !== 1) solved = false;
   }
-  return { solved, total, dom }; // <-- NOW RETURNS THE DOM FOR REUSE
+  return { solved, total, dom }; 
 }
 
 function pruneHint(N, dom, h) {
@@ -129,7 +122,7 @@ function pruneHint(N, dom, h) {
     const cur = dom[v.r][v.s];
     const keep = [];
     for (const x of cur) if (supported(vars, vi, x, dom, h, N)) keep.push(x);
-    if (keep.length === 0) continue;              /* defensive; cannot happen for true hints */
+    if (keep.length === 0) continue;              
     if (keep.length !== cur.length) { dom[v.r][v.s] = keep; changed = true; }
   }
   return changed;
@@ -171,7 +164,6 @@ function hintKey(h) {
   return h.type + '|' + [h.a, h.b, h.c].filter(Boolean).map(v => v.r * 10 + v.s).join(',');
 }
 
-/* All statements true in the given solution — the pool the generator draws from. */
 function candidateHints(N, sol) {
   const out = [];
   const syms = [];
@@ -198,7 +190,6 @@ function candidateHints(N, sol) {
       }
     }
   }
-  /* 'between' triples, randomly sampled */
   for (let t = 0; t < 160; t++) {
     const a = syms[(Math.random() * syms.length) | 0];
     const b = syms[(Math.random() * syms.length) | 0];
@@ -232,7 +223,6 @@ function generatePuzzle(N) {
 
     const hints = [];
     
-    // Start with a base state
     let res = { solved: false, total: N * N * N, dom: null };
     let steps = 0;
     const maxSteps = N * N;
@@ -252,13 +242,12 @@ function generatePuzzle(N) {
       for (const h of allCands) {
         if (isUsed(h)) continue;
 
-        // Pass the current best `dom` to avoid rebuilding from scratch!
         const r2 = propagate(N, revealed, hints.concat([h]), res.dom);
         
         if (r2.total < res.total) {
           hints.push(h);
           usedHintKeys.add(hintKey(h));
-          res = r2; // Save the new state, including the heavily-reduced `dom`
+          res = r2; 
           added = true;
           break; 
         }
@@ -278,7 +267,6 @@ function generatePuzzle(N) {
     return { v: 1, N, sets, sol, revealed, hints, placed: [], mistakes: 0, done: null };
   }
 
-  /* Extremely rare fallback: reveal cells until the grid is forced. */
   const sol = Array.from({ length: N }, () => shuffle(range(N)));
   const pool = [];
   for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) pool.push({ r, c });
@@ -300,8 +288,8 @@ const MKEY = 'einstein-pwa-sound';
 const THEME_KEY = 'einstein-theme';
 const MAX_MISTAKES = 3;
 
-let G = null;       /* current game state */
-let sel = null;     /* selected cell {r, c} */
+let G = null;       
+let sel = null;     
 let soundOn = true;
 
 function save() {
@@ -396,7 +384,6 @@ function loadSave() {
       return j;
     }
 
-    /* Corrupt/incompatible save: discard it */
     localStorage.removeItem(SKEY);
   } catch (e) {
     try {
@@ -423,7 +410,7 @@ const soundBtn  = document.getElementById('soundBtn');
 const themeBtn  = document.getElementById('themeBtn');
 const newBtn    = document.getElementById('newBtn');
 
-/* ================= sounds (synthesized, no assets) ================= */
+/* ================= sounds ================= */
 
 const sounds = (() => {
   let ctx = null;
@@ -545,7 +532,7 @@ function renderBoard() {
       boardEl.appendChild(cell);
     }
   }
-  fitBoard();
+  updateLayout();
 }
 
 function renderStrikes() {
@@ -563,9 +550,7 @@ function renderHints() {
   hintsEl.innerHTML = '';
   G.hints.forEach((h, i) => {
     const li = document.createElement('li');
-
     li.dataset.hintIndex = i; 
-    
     li.setAttribute('aria-label', hintAria(h));
 
     const content = document.createElement('span');
@@ -574,7 +559,6 @@ function renderHints() {
       content.appendChild(typeof part === 'string' ? document.createTextNode(part) : part);
     }
     li.appendChild(content);
-
     hintsEl.appendChild(li);
   });
 }
@@ -618,12 +602,69 @@ function updateSel() {
   renderTray();
 }
 
-function fitBoard() {
-  const cell = boardEl.querySelector('.cell');
-  if (!cell) return;
-  const w = cell.getBoundingClientRect().width;
-  boardEl.style.setProperty('--sym', Math.round(w * 0.42) + 'px');
-  boardEl.style.setProperty('--cellsw', Math.round(w * 0.5) + 'px');
+function updateLayout() {
+  if (!G) return;
+  const N = G.N;
+  
+  gameEl.classList.remove('layout-stacked', 'layout-hints-right-tray-below', 'layout-hints-right-tray-right', 'layout-hints-below-tray-right');
+  
+  const availW = gameEl.clientWidth;
+  const headerEl = document.querySelector('header');
+  const headerH = headerEl ? headerEl.offsetHeight : 60;
+  const availH = window.innerHeight - headerH - 48; 
+  
+  const HINT_COL_W = 260;
+  const TRAY_H = 80;
+  const TRAY_W = 80;
+  const GAP = 24;
+  
+  const MIN_CELL = 32;
+  const MAX_CELL = 60;
+  
+  let layoutClass = 'layout-stacked';
+  let cellSize = MIN_CELL;
+  
+  if (MIN_CELL * N + GAP + HINT_COL_W <= availW) {
+    let maxBoardW = availW - HINT_COL_W - GAP;
+    cellSize = Math.floor(maxBoardW / N);
+    cellSize = Math.max(MIN_CELL, Math.min(MAX_CELL, cellSize));
+    let boardW = cellSize * N;
+    let boardH = boardW;
+    
+    if (boardH + GAP + TRAY_H <= availH) {
+      layoutClass = 'layout-hints-right-tray-below';
+    } 
+    else if (boardW + GAP + TRAY_W + GAP + HINT_COL_W <= availW) {
+      layoutClass = 'layout-hints-right-tray-right';
+    }
+  } 
+  
+  if (layoutClass === 'layout-stacked') {
+    let maxBoardW = availW;
+    cellSize = Math.floor(maxBoardW / N);
+    cellSize = Math.max(MIN_CELL, Math.min(MAX_CELL, cellSize));
+    let boardW = cellSize * N;
+    
+    if (boardW + GAP + TRAY_W <= availW) {
+       layoutClass = 'layout-hints-below-tray-right';
+    } else {
+       layoutClass = 'layout-stacked';
+    }
+  }
+  
+  gameEl.classList.add(layoutClass);
+  
+  boardEl.style.width = (cellSize * N) + 'px';
+  boardEl.style.height = (cellSize * N) + 'px';
+  
+  if (layoutClass === 'layout-hints-right-tray-right' || layoutClass === 'layout-hints-below-tray-right') {
+    trayEl.style.height = (cellSize * N) + 'px';
+  } else {
+    trayEl.style.height = ''; 
+  }
+  
+  boardEl.style.setProperty('--sym', Math.round(cellSize * 0.42) + 'px');
+  boardEl.style.setProperty('--cellsw', Math.round(cellSize * 0.5) + 'px');
 }
 
 function restoreHintOpacities() {
@@ -648,12 +689,11 @@ function restoreHintOpacities() {
       li.style.opacity = '0.5';
       dimmed.push(li);
     } else {
-      li.style.opacity = ''; // Reset in case it was somehow altered
+      li.style.opacity = ''; 
       active.push(li);
     }
   }
 
-  // Re-append existing nodes in the correct order (highly efficient, no innerHTML rebuild)
   for (const li of active) hintsEl.appendChild(li);
   for (const li of dimmed) hintsEl.appendChild(li);
 }
@@ -664,7 +704,7 @@ function cellAt(r, c) { return boardEl.children[r * G.N + c]; }
 
 function onCell(r, c) {
   if (!G || G.done) return;
-  if (cellAt(r, c).classList.contains('filled')) return;   /* no undo, no re-opening */
+  if (cellAt(r, c).classList.contains('filled')) return;   
   sounds.tick();
   sel = (sel && sel.r === r && sel.c === c) ? null : { r, c };
   updateSel();
@@ -674,11 +714,9 @@ function evaluateHintForSymbol(r, s) {
   G.hints.forEach((h, i) => {
     const symsInHint = [h.a, h.b, h.c].filter(Boolean);
     
-    // Check if this hint contains the specific symbol just placed
     const containsTarget = symsInHint.some(sym => sym.r === r && sym.s === s);
     
     if (containsTarget) {
-      // Check if ALL symbols in this hint are now on the board
       const allOnBoard = symsInHint.every(sym => 
         G.revealed.some(v => v.r === sym.r && v.s === sym.s) || 
         G.placed.some(v => v.r === sym.r && v.s === sym.s)
@@ -687,7 +725,6 @@ function evaluateHintForSymbol(r, s) {
       if (allOnBoard) {
         const li = hintsEl.querySelector(`li[data-hint-index="${i}"]`);
         
-        // Only update and move if it hasn't been processed already (Idempotent check)
         if (li && li.style.opacity !== '0.5') {
           li.style.opacity = '0.5';
           hintsEl.appendChild(li);
@@ -709,7 +746,6 @@ function autoFillLastCell(r) {
       if (!filled.find(v => v.c === i)) { emptyC = i; break; }
     }
       
-    // Place the missing symbol automatically
     if (missingS !== -1 && emptyC !== -1) {
       G.placed.push({ r, c: emptyC, s: missingS });
       const autoCell = cellAt(r, emptyC);
@@ -790,6 +826,8 @@ function startGame(state) {
   overlayEl.setAttribute('hidden', '');
   gameEl.removeAttribute('hidden');
   renderBoard(); renderStrikes(); renderHints(); renderTray();
+  
+  updateLayout(); 
 }
 
 function showMenu() {
@@ -881,10 +919,11 @@ function init() {
   applyTheme(savedTheme);
 
   if ('ResizeObserver' in window) {
-    new ResizeObserver(fitBoard).observe(boardEl);
+    new ResizeObserver(updateLayout).observe(gameEl);
   }
 
-  window.addEventListener('resize', fitBoard);
+  window.addEventListener('resize', updateLayout);
+  window.addEventListener('orientationchange', updateLayout);
 
   let saved = null;
 
