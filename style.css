@@ -285,7 +285,7 @@ main { max-width: 61.25rem; margin: 0 auto; }
     align-items: start; 
   }
   #board { grid-area: 1 / 1; justify-self: center; }
-  #tray { grid-area: 2 / 1; justify-self: center; width: 100%; }
+  #tray { grid-area: 2 / 1; justify-self: center; align-self: start; width: 100%; }
   .hints-wrap { grid-area: 1 / 2 / 3 / 3; margin-top: 0; max-width: none; }
 }
 
