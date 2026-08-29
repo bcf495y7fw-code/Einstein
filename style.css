@@ -135,8 +135,9 @@ main { max-width: 61.25rem; margin: 0 auto; }
 #board {
   display: grid; gap: 0.0625rem;
   background: var(--line); border: 0.0625rem solid var(--line);
-  width: min(100%, 64vh, 33.75rem);
-  width: min(100%, 64dvh, 33.75rem);
+  width: calc(100vw - 2rem);
+  width: calc(100dvw - 2rem);
+  max-width: 33.75rem;
   margin: 0 auto;
   user-select: none; -webkit-user-select: none;
 }
@@ -281,7 +282,7 @@ main { max-width: 61.25rem; margin: 0 auto; }
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-rows: min-content;
     column-gap: 3.5rem; 
-    align-items: start;
+    align-items: start; 
   }
   #board { grid-area: 1 / 1; justify-self: center; }
   #tray { grid-area: 2 / 1; justify-self: center; width: 100%; }
@@ -290,7 +291,8 @@ main { max-width: 61.25rem; margin: 0 auto; }
 
 @media (min-width: 42rem) and (orientation: landscape) {
   #board {
-    width: min(100%, 33.75rem, calc(100vh - 7rem));
-    width: min(100%, 33.75rem, calc(100dvh - 7rem));
+    width: calc(100vh - 7rem);
+    width: calc(100dvh - 7rem);
+    max-width: 33.75rem;
   }
 }
