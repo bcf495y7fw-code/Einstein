@@ -291,8 +291,8 @@ main { max-width: 61.25rem; margin: 0 auto; }
 
 @media (min-width: 42rem) and (orientation: landscape) {
   #board {
-    width: calc(100vh - 7rem);
-    width: calc(100dvh - 7rem);
+    width: calc(100vh - 2rem);
+    width: calc(100dvh - 2rem);
     max-width: 33.75rem;
   }
 }
