@@ -299,19 +299,10 @@ main { max-width: 61.25rem; margin: 0 auto; }
 
 /* ===== TEMPORARY GRID DEBUG — remove later ===== */
 #game {
-  outline: 4px solid red;          /* grid container */
+  outline: 1px solid blue;          /* grid container */
 }
 #game > * {
-  outline: 3px dashed red;         /* every grid item */
-}
-#board {
-  outline-color: #ff0000;          /* solid red for board */
-}
-#tray {
-  outline-color: #ff6600;          /* orange for tray */
-}
-.hints-wrap {
-  outline-color: #ff00ff;          /* magenta for hints */
+  outline: 1px dashed green;         /* every grid item */
 }
 
 /* show the implicit grid tracks as faint red lines */
