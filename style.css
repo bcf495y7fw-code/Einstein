@@ -297,19 +297,19 @@ main { max-width: 61.25rem; margin: 0 auto; }
   }
 }
 
-/* ===== TEMPORARY GRID DEBUG — remove later ===== */
+/* ===== TEMPORARY GRID DEBUG ===== */
 #game {
-  outline: 1px solid blue;          /* grid container */
-}
-#game > * {
-  outline: 1px dashed green;         /* every grid item */
+  column-gap: 2px !important;   /* override the 1.5rem gap */
+  row-gap: 2px !important;
+  background-color: rgba(255, 0, 0, 0.6);
+  outline: 2px solid blue;       /* outer edge of the grid */
 }
 
-/* show the implicit grid tracks as faint red lines */
-#game {
-  background-image:
-    repeating-linear-gradient(to bottom, rgba(255,0,0,.25) 0 1px, transparent 1px 100%),
-    repeating-linear-gradient(to right,  rgba(255,0,0,.25) 0 1px, transparent 1px 100%);
-  background-size: 100% 50%, 50% 100%;  /* approximates 2×2 tracks */
+#game > * {
+  outline: 1px dashed green;    /* item boundaries */
+  background-color: var(--bg);  /* opaque so items cover the red */
 }
+
+/* ===== END DEBUG ===== */
+
 /* ===== END DEBUG ===== */
