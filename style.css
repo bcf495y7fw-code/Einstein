@@ -206,7 +206,8 @@ main {
 #tray {
   min-height: 3.875rem; 
   margin: 0; 
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   display: flex; 
   align-items: center; 
   justify-content: center; 
