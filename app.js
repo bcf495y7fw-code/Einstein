@@ -602,15 +602,60 @@ function updateSel() {
   renderTray();
 }
 
+function showGameView() {
+  menuEl.hidden = true;
+  overlayEl.hidden = true;
+  gameEl.hidden = false;
+}
+
+function resetLayoutSizes() {
+  boardEl.style.width = '';
+  boardEl.style.height = '';
+  trayEl.style.height = '';
+}
+
+function renderGame() {
+  showGameView();
+  resetLayoutSizes();
+
+  renderBoard();
+  renderStrikes();
+  renderHints();
+  renderTray();
+
+  updateLayout();
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(updateLayout);
+  });
+}
+
 function updateLayout() {
   if (!G) return;
   const N = G.N;
   
-  gameEl.classList.remove('layout-stacked', 'layout-hints-right-tray-below', 'layout-hints-right-tray-right', 'layout-hints-below-tray-right');
+  gameEl.classList.remove(
+    'layout-stacked', 
+    'layout-hints-right-tray-below', 
+    'layout-hints-right-tray-right', 
+    'layout-hints-below-tray-right'
+  );
 
-  let availW = gameEl.clientWidth;
-  if (!availW || availW <= 0) availW = 300; /* Fallback if measured while hidden */
-  
+  const mainEl = document.querySelector('main');
+
+  let availW = 0;
+
+  if (mainEl) {
+    const cs = getComputedStyle(mainEl);
+    availW = mainEl.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  }
+
+  if (!availW || availW <= 0) {
+    availW = window.innerWidth - 32;
+  }
+
+  availW = Math.floor(availW);
+
   const headerEl = document.querySelector('header');
   const headerH = headerEl ? headerEl.offsetHeight : 60;
   const availH = window.innerHeight - headerH - 48; 
@@ -824,12 +869,7 @@ function showOverlay(title, sub) {
 
 function startGame(state) {
   G = state; sel = null;
-  menuEl.setAttribute('hidden', '');
-  overlayEl.setAttribute('hidden', '');
-  gameEl.removeAttribute('hidden');
-  renderBoard(); renderStrikes(); renderHints(); renderTray();
-  
-  updateLayout(); 
+  renderGame();
 }
 
 function showMenu() {
@@ -920,8 +960,10 @@ function init() {
   const savedTheme = localStorage.getItem(THEME_KEY) || 'auto';
   applyTheme(savedTheme);
 
-  if ('ResizeObserver' in window) {
-    new ResizeObserver(updateLayout).observe(gameEl);
+  const mainEl = document.querySelector('main');
+
+  if ('ResizeObserver' in window && mainEl) {
+    new ResizeObserver(updateLayout).observe(mainEl);
   }
 
   window.addEventListener('resize', updateLayout);
