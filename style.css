@@ -236,8 +236,9 @@ main {
 
 .tray-chip {
   flex: 1 1 0%;
-  min-width: 0;
-  height: 2.875rem; padding: 0;
+  min-width: 2.875rem;
+  min-height: 2.875rem; 
+  padding: 0;
   border-radius: 0.625rem; font-size: 1.1875rem; cursor: pointer;
 }
 .tray-chip .swatch { width: 1.125rem; height: 1.125rem; }
@@ -349,13 +350,6 @@ main {
   width: auto;
   justify-content: center;
   gap: 0.5rem;
-}
-
-.layout-hints-right-tray-right #tray .tray-chip,
-.layout-hints-below-tray-right #tray .tray-chip {
-  flex: 0 0 auto;
-  width: 2.875rem;
-  height: 2.875rem;
 }
 
 /* ---------- menu ---------- */
