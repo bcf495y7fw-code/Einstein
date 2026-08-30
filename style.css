@@ -215,7 +215,7 @@ main {
   gap: 0.625rem;
   user-select: none; -webkit-user-select: none;
 }
-#tray .hint-text { font-size: 0.8125rem; opacity: 0.45; }
+#tray .hint-text { font-size: 0.8125rem; opacity: 0.45; text-align: center; }
 
 .chip {
   display: inline-flex; align-items: center; justify-content: center;
