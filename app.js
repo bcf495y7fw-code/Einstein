@@ -596,6 +596,20 @@ function renderTray() {
   }
 }
 
+function syncTrayWithBoard() {
+  const trayIsVertical =
+    gameEl.classList.contains('layout-hints-right-tray-right') ||
+    gameEl.classList.contains('layout-hints-below-tray-right');
+
+  if (trayIsVertical) {
+    trayEl.style.width = '';
+    trayEl.style.height = boardEl.style.height;
+  } else {
+    trayEl.style.width = boardEl.style.width;
+    trayEl.style.height = '';
+  }
+}
+
 function updateSel() {
   for (const el of boardEl.children) el.classList.remove('sel');
   if (sel) cellAt(sel.r, sel.c).classList.add('sel');
@@ -611,6 +625,7 @@ function showGameView() {
 function resetLayoutSizes() {
   boardEl.style.width = '';
   boardEl.style.height = '';
+  trayEl.style.width = '';
   trayEl.style.height = '';
 }
 
@@ -743,6 +758,8 @@ function restoreHintOpacities() {
 
   for (const li of active) hintsEl.appendChild(li);
   for (const li of dimmed) hintsEl.appendChild(li);
+
+  syncTrayWithBoard();
 }
 
 /* ================= interaction ================= */
