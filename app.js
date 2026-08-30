@@ -596,20 +596,6 @@ function renderTray() {
   }
 }
 
-function syncTrayWithBoard() {
-  const trayIsVertical =
-    gameEl.classList.contains('layout-hints-right-tray-right') ||
-    gameEl.classList.contains('layout-hints-below-tray-right');
-
-  if (trayIsVertical) {
-    trayEl.style.width = '';
-    trayEl.style.height = boardEl.style.height;
-  } else {
-    trayEl.style.width = boardEl.style.width;
-    trayEl.style.height = '';
-  }
-}
-
 function updateSel() {
   for (const el of boardEl.children) el.classList.remove('sel');
   if (sel) cellAt(sel.r, sel.c).classList.add('sel');
@@ -715,14 +701,23 @@ function updateLayout() {
   }
   
   gameEl.classList.add(layoutClass);
-  
-  boardEl.style.width = (cellSize * N) + 'px';
-  boardEl.style.height = (cellSize * N) + 'px';
-  
-  if (layoutClass === 'layout-hints-right-tray-right' || layoutClass === 'layout-hints-below-tray-right') {
-    trayEl.style.height = (cellSize * N) + 'px';
+
+  const boardSize = cellSize * N;
+  const boardSizePx = boardSize + 'px';
+
+  boardEl.style.width = boardSizePx;
+  boardEl.style.height = boardSizePx;
+
+  const trayIsVertical =
+    layoutClass === 'layout-hints-right-tray-right' ||
+    layoutClass === 'layout-hints-below-tray-right';
+
+  if (trayIsVertical) {
+    trayEl.style.width = '';
+    trayEl.style.height = boardSizePx;
   } else {
-    trayEl.style.height = ''; 
+    trayEl.style.width = boardSizePx;
+    trayEl.style.height = '';
   }
   
   boardEl.style.setProperty('--sym', Math.round(cellSize * 0.42) + 'px');
@@ -758,8 +753,6 @@ function restoreHintOpacities() {
 
   for (const li of active) hintsEl.appendChild(li);
   for (const li of dimmed) hintsEl.appendChild(li);
-
-  syncTrayWithBoard();
 }
 
 /* ================= interaction ================= */
