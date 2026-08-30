@@ -281,58 +281,81 @@ main {
 .hint-content { flex: 1 1 auto; }
 
 /* ---------- layout modes (controlled by JS) ---------- */
+
 .layout-stacked {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.layout-stacked #hints { columns: 1; }
 
+.layout-stacked #hints {
+  columns: 1;
+}
+
+/* In these modes, .left-col should size itself to its content,
+   not take the full width */
+.layout-hints-right-tray-below .left-col,
+.layout-hints-right-tray-right .left-col,
+.layout-hints-below-tray-right .left-col {
+  width: auto;
+  max-width: 100%;
+}
+
+/* Hints to the right, tray below the board */
 .layout-hints-right-tray-below {
   display: grid;
-  grid-template-columns: auto 1fr;
-  justify-content: center;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   align-items: start;
   gap: 1.5rem;
 }
 
+.layout-hints-right-tray-below .left-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Hints to the right, tray to the right of the board */
 .layout-hints-right-tray-right {
   display: grid;
-  grid-template-columns: auto auto 1fr;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   align-items: start;
   gap: 1.5rem;
 }
-.layout-hints-right-tray-right .left-col { gap: 0; }
-.layout-hints-right-tray-right #tray {
-  flex-direction: column;
-  width: auto;
-  justify-content: center;
-  gap: 0.5rem;
-}
-.layout-hints-right-tray-right #tray .tray-chip {
-  flex: 0 0 auto;
-  width: 2.875rem;
-  height: 2.875rem;
+
+.layout-hints-right-tray-right .left-col {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, auto);
+  align-items: start;
+  gap: 1.5rem;
 }
 
+/* Hints below, tray to the right of the board */
 .layout-hints-below-tray-right {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1.5rem;
 }
+
 .layout-hints-below-tray-right .left-col {
   display: grid;
-  grid-template-columns: auto auto;
-  gap: 1.5rem;
-  justify-content: center;
+  grid-template-columns: minmax(0, auto) minmax(0, auto);
   align-items: start;
+  gap: 1.5rem;
 }
+
+/* Vertical tray in both tray-right modes */
+.layout-hints-right-tray-right #tray,
 .layout-hints-below-tray-right #tray {
   flex-direction: column;
   width: auto;
   justify-content: center;
   gap: 0.5rem;
 }
+
+.layout-hints-right-tray-right #tray .tray-chip,
 .layout-hints-below-tray-right #tray .tray-chip {
   flex: 0 0 auto;
   width: 2.875rem;
