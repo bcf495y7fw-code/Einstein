@@ -288,10 +288,6 @@ main {
   align-items: center;
 }
 
-.layout-stacked #hints {
-  columns: 1;
-}
-
 /* In these modes, .left-col should size itself to its content,
    not take the full width */
 .layout-hints-right-tray-below .left-col,
