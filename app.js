@@ -633,14 +633,17 @@ function renderGame() {
 
 function updateLayout() {
   if (!G) return;
+
   const N = G.N;
-  
+
   gameEl.classList.remove(
-    'layout-stacked', 
-    'layout-hints-right-tray-below', 
-    'layout-hints-right-tray-right', 
+    'layout-stacked',
+    'layout-hints-right-tray-below',
+    'layout-hints-right-tray-right',
     'layout-hints-below-tray-right'
   );
+
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
 
   const mainEl = document.querySelector('main');
 
@@ -648,78 +651,134 @@ function updateLayout() {
 
   if (mainEl) {
     const cs = getComputedStyle(mainEl);
-    availW = mainEl.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    availW = mainEl.clientWidth
+           - parseFloat(cs.paddingLeft)
+           - parseFloat(cs.paddingRight);
   }
 
   if (!availW || availW <= 0) {
-    availW = window.innerWidth - 32;
+    availW = window.innerWidth - 2 * rem;
   }
 
   availW = Math.floor(availW);
 
   const headerEl = document.querySelector('header');
   const headerH = headerEl ? headerEl.offsetHeight : 60;
-  const availH = window.innerHeight - headerH - 48; 
-  
-  const HINT_COL_W = 260;
-  const TRAY_H = 80;
-  const TRAY_W = 80;
-  const GAP = 24;
-  
-  const MIN_CELL = 32;
-  const MAX_CELL = 60;
-  
-  let layoutClass = 'layout-stacked';
-  let cellSize = MIN_CELL;
-  
-  if (MIN_CELL * N + GAP + HINT_COL_W <= availW) {
-    let maxBoardW = availW - HINT_COL_W - GAP;
-    cellSize = Math.floor(maxBoardW / N);
-    cellSize = Math.max(MIN_CELL, Math.min(MAX_CELL, cellSize));
-    let boardW = cellSize * N;
-    let boardH = boardW;
-    
-    if (boardH + GAP + TRAY_H <= availH) {
-      layoutClass = 'layout-hints-right-tray-below';
-    } 
-    else if (boardW + GAP + TRAY_W + GAP + HINT_COL_W <= availW) {
-      layoutClass = 'layout-hints-right-tray-right';
-    }
-  } 
-  
-  if (layoutClass === 'layout-stacked') {
-    let maxBoardW = availW;
-    cellSize = Math.floor(maxBoardW / N);
-    cellSize = Math.max(MIN_CELL, Math.min(MAX_CELL, cellSize));
-    let boardW = cellSize * N;
-    
-    if (boardW + GAP + TRAY_W <= availW) {
-       layoutClass = 'layout-hints-below-tray-right';
+  const availH = window.innerHeight - headerH - 3 * rem;
+
+  /* Layout constants.
+     These match the CSS values:
+     - hint column: 16rem
+     - main gaps: 1.5rem
+     - board cells: 2rem to 3.75rem
+  */
+  const HINT_COL_W = 16 * rem;
+  const TRAY_H = 5 * rem;
+  const TRAY_W = 5 * rem;
+  const GAP = 1.5 * rem;
+
+  const MIN_CELL = 2 * rem;
+  const MAX_CELL = 3.75 * rem;
+
+  /* Tune this threshold if needed:
+     0.66 puts hints on the right more eagerly,
+     0.75 is more conservative. */
+  const HINTS_SIDE_RATIO = 0.66;
+
+  const clampCell = availableWidth => {
+    const raw = availableWidth / N;
+    return Math.max(MIN_CELL, Math.min(MAX_CELL, Math.floor(raw)));
+  };
+
+  /* 1. Board size */
+  let cellSize = clampCell(availW);
+  let boardSize = Math.round(cellSize * N);
+
+  /* 2. Tray placement:
+        below if it fits below,
+        otherwise right if it fits right */
+  let trayRight = false;
+  let trayBelow = boardSize + GAP + TRAY_H <= availH;
+
+  if (!trayBelow) {
+    if (boardSize + GAP + TRAY_W <= availW) {
+      trayRight = true;
+      trayBelow = false;
     } else {
-       layoutClass = 'layout-stacked';
+      trayRight = false;
+      trayBelow = true;   /* fallback: keep tray below, allow vertical scroll */
     }
   }
-  
+
+  /* 3. Space remaining on the right */
+  const leftWidth = trayRight
+    ? boardSize + GAP + TRAY_W
+    : boardSize;
+
+  const rightWidth = availW - leftWidth - GAP;
+
+  const rightColumns = rightWidth >= HINT_COL_W
+    ? Math.floor((rightWidth + GAP) / (HINT_COL_W + GAP))
+    : 0;
+
+  /* 4. Decide whether hints should go to the right */
+  let hintsRight = false;
+
+  if (rightColumns >= 1 && G.hints.length > 0) {
+    const firstHint = hintsEl.querySelector('li');
+    let hintH = 0;
+
+    if (firstHint) {
+      const cs = getComputedStyle(firstHint);
+
+      const lineHeight = parseFloat(cs.lineHeight);
+      const padV = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      const borderV = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+
+      hintH = lineHeight + padV + borderV;
+
+      if (!isFinite(hintH) || hintH <= 0) {
+        hintH = firstHint.getBoundingClientRect().height;
+      }
+    }
+
+    if (!hintH || hintH <= 0) {
+      hintH = 3 * rem;
+    }
+
+    const totalHintsH = hintH * G.hints.length;
+    const rightCapacity = rightColumns * availH;
+
+    hintsRight =
+      totalHintsH <= 0 ||
+      (rightCapacity / totalHintsH) >= HINTS_SIDE_RATIO;
+  }
+
+  /* 5. Final layout class */
+  const layoutClass = hintsRight
+    ? (trayRight
+        ? 'layout-hints-right-tray-right'
+        : 'layout-hints-right-tray-below')
+    : (trayRight
+        ? 'layout-hints-below-tray-right'
+        : 'layout-stacked');
+
   gameEl.classList.add(layoutClass);
 
-  const boardSize = cellSize * N;
+  /* 6. Apply sizes */
   const boardSizePx = boardSize + 'px';
 
   boardEl.style.width = boardSizePx;
   boardEl.style.height = boardSizePx;
 
-  const trayIsVertical =
-    layoutClass === 'layout-hints-right-tray-right' ||
-    layoutClass === 'layout-hints-below-tray-right';
-
-  if (trayIsVertical) {
+  if (trayRight) {
     trayEl.style.width = '';
     trayEl.style.height = boardSizePx;
   } else {
     trayEl.style.width = boardSizePx;
     trayEl.style.height = '';
   }
-  
+
   boardEl.style.setProperty('--sym', Math.round(cellSize * 0.42) + 'px');
   boardEl.style.setProperty('--cellsw', Math.round(cellSize * 0.5) + 'px');
 }
