@@ -685,13 +685,9 @@ function updateLayout() {
      0.75 is more conservative. */
   const HINTS_SIDE_RATIO = 0.66;
 
-  const clampCell = availableWidth, availableHeight => {
-    const raw = Math.min(availableWidth, availableHeight) / N;
-    return Math.max(MIN_CELL, Math.min(MAX_CELL, Math.floor(raw)));
-  };
-
   /* 1. Board size */
-  let cellSize = clampCell(availW, availH);
+  const raw = Math.min(availW, availH) / N;
+  let cellSize = Math.max(MIN_CELL, Math.min(MAX_CELL, Math.floor(raw)));
   let boardSize = Math.round(cellSize * N);
 
   /* 2. Tray placement:
