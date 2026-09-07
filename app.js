@@ -449,14 +449,7 @@ function makeChip(setIdx, s) {
   const set = SETS[setIdx];
   const chip = document.createElement('span');
   chip.className = 'chip set-' + set.id;
-  if (set.colors) {
-    const i = document.createElement('i');
-    i.className = 'swatch';
-    i.style.background = set.colors[s];
-    chip.appendChild(i);
-  } else {
-    chip.textContent = set.glyphs[s];
-  }
+  chip.textContent = set.glyphs[s];
   chip.setAttribute('role', 'img');
   chip.setAttribute('aria-label', symName(setIdx, s));
   return chip;
@@ -501,17 +494,10 @@ function hintAria(h) {
 function fillCell(cell, r, s) {
   cell.textContent = '';
   const set = SETS[G.sets[r]];
-  if (set.colors) {
-    const i = document.createElement('i');
-    i.className = 'swatch';
-    i.style.background = set.colors[s];
-    cell.appendChild(i);
-  } else {
-    const sp = document.createElement('span');
-    sp.className = 'glyph';
-    sp.textContent = set.glyphs[s];
-    cell.appendChild(sp);
-  }
+  const sp = document.createElement('span');
+  sp.className = 'glyph';
+  sp.textContent = set.glyphs[s];
+  cell.appendChild(sp);
 }
 
 function renderBoard() {
@@ -776,7 +762,6 @@ function updateLayout() {
   }
 
   boardEl.parentElement.style.setProperty('--sym', Math.round(cellSize * 0.42) + 'px');
-  boardEl.style.setProperty('--cellsw', Math.round(cellSize * 0.5) + 'px');
 }
 
 function restoreHintOpacities() {
