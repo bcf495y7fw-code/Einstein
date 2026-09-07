@@ -349,7 +349,6 @@ main {
   flex-direction: column;
   width: auto;
   justify-content: center;
-  gap: 0.5rem;
 }
 
 /* ---------- menu ---------- */
