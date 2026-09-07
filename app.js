@@ -775,7 +775,7 @@ function updateLayout() {
     trayEl.style.height = '';
   }
 
-  boardEl.style.setProperty('--sym', Math.round(cellSize * 0.42) + 'px');
+  boardEl.parentElement.style.setProperty('--sym', Math.round(cellSize * 0.42) + 'px');
   boardEl.style.setProperty('--cellsw', Math.round(cellSize * 0.5) + 'px');
 }
 
