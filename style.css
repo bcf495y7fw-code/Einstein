@@ -197,9 +197,9 @@ main {
   25% { transform: translateX(-0.1875rem); }
   75% { transform: translateX(0.1875rem); }
 }
-.cell.pop .glyph, .cell.pop .swatch { animation: pop 0.18s ease-out; }
+.cell.pop .glyph { animation: pop 0.18s ease-out; }
 @keyframes pop { from { transform: scale(0.6); opacity: 0.4; } to { transform: scale(1); opacity: 1; } }
-.cell.ghost .glyph, .cell.ghost .swatch { opacity: 0.35; }
+.cell.ghost .glyph { opacity: 0.35; }
 
 /* ---------- symbol tray ---------- */
 #tray {
