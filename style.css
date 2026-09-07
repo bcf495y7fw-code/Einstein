@@ -203,7 +203,8 @@ main {
 
 /* ---------- symbol tray ---------- */
 #tray {
-  min-height: 3.875rem; 
+  min-height: 3.875rem;
+  min-width: 3.875rem;
   margin: 0; 
   width: auto;
   max-width: 100%;
