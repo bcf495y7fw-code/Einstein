@@ -350,6 +350,7 @@ main {
   flex-direction: column;
   width: auto;
   justify-content: center;
+  align-items: flex-start;
 }
 
 /* ---------- menu ---------- */
