@@ -349,6 +349,7 @@ main {
 .layout-hints-below-tray-right #tray {
   flex-direction: column;
   width: auto;
+  max-width: 3.75rem;
   justify-content: center;
   align-items: flex-start;
 }
