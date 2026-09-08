@@ -659,8 +659,8 @@ function updateLayout() {
      - board cells: 2rem to 3.75rem
   */
   const HINT_COL_W = 16 * rem;
-  const TRAY_H = 5 * rem;
-  const TRAY_W = 5 * rem;
+  const TRAY_H = 3.875 * rem;
+  const TRAY_W = 3.875 * rem;
   const GAP = 1.5 * rem;
 
   const MIN_CELL = 2 * rem;
