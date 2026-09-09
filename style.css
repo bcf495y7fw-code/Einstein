@@ -303,14 +303,12 @@ main {
   grid-template-columns: auto auto;
   align-items: start;
   justify-content: center;
-  gap: 1.5rem;
 }
 
 .layout-hints-right-tray-below .left-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
 }
 
 /* Hints to the right, tray to the right of the board */
@@ -319,14 +317,12 @@ main {
   grid-template-columns: auto auto;
   align-items: start;
   justify-content: center;
-  gap: 1.5rem;
 }
 
 .layout-hints-right-tray-right .left-col {
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, auto);
   align-items: start;
-  gap: 1.5rem;
 }
 
 /* Hints below, tray to the right of the board */
@@ -334,14 +330,12 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
 }
 
 .layout-hints-below-tray-right .left-col {
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, auto);
   align-items: start;
-  gap: 1.5rem;
 }
 
 /* Vertical tray in both tray-right modes */
