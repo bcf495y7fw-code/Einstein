@@ -354,6 +354,18 @@ main {
   align-items: flex-start;
 }
 
+/* --- temp --- */
+
+.layout-hints-right-tray-right {
+  outline: 3px solid red;
+}
+.layout-hints-below-tray-right {
+  outline: 3px solid blue;
+}
+.layout-stacked {
+  outline: 3px solid green;
+}
+
 /* ---------- menu ---------- */
 #menu { margin: 10vh auto 0; text-align: center; }
 .menu-sub { font-size: 0.875rem; line-height: 1.7; opacity: 0.6; margin: 0 0 1.375rem; }
