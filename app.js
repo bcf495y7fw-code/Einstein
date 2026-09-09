@@ -656,6 +656,7 @@ function updateLayout() {
      These match the CSS values:
      - hint column: 16rem
      - main gaps: 1.5rem
+     - board to tray gap: 0.75ren
      - board cells: 2rem to 3.75rem
   */
   const HINT_COL_W = 16 * rem;
@@ -680,10 +681,10 @@ function updateLayout() {
         below if it fits below,
         otherwise right if it fits right */
   let trayRight = false;
-  let trayBelow = boardSize + GAP + TRAY_H <= availH;
+  let trayBelow = boardSize + GAP / 2 + TRAY_H <= availH;
 
   if (!trayBelow) {
-    if (boardSize + GAP + TRAY_W <= availW) {
+    if (boardSize + GAP / 2 + TRAY_W <= availW) {
       trayRight = true;
       trayBelow = false;
     } else {
@@ -694,7 +695,7 @@ function updateLayout() {
 
   /* 3. Space remaining on the right */
   const leftWidth = trayRight
-    ? boardSize + GAP + TRAY_W
+    ? boardSize + GAP / 2 + TRAY_W
     : boardSize;
 
   const rightWidth = availW - leftWidth - GAP;
