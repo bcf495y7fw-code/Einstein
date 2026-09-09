@@ -155,7 +155,6 @@ main {
 /* ---------- board ---------- */
 #game {
   flex-direction: column;
-  align-items: center;
   gap: 1.5rem;
   padding-top: 1rem;
   margin: 0 auto;
