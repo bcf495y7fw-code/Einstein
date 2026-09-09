@@ -305,12 +305,6 @@ main {
   justify-content: center;
 }
 
-.layout-hints-right-tray-below .left-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* Hints to the right, tray to the right of the board */
 .layout-hints-right-tray-right {
   display: grid;
