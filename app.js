@@ -416,7 +416,15 @@ const sounds = (() => {
   let ctx = null;
   function ac() {
     try {
-      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!ctx) {
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        /* Unlock audio on iOS by playing a silent buffer */
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+      }
       if (ctx && ctx.state === 'suspended') ctx.resume();
     } catch (e) {}
     return ctx;
