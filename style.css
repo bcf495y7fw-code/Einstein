@@ -303,6 +303,7 @@ main {
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   align-items: start;
+  justify-content: center;
   gap: 1.5rem;
 }
 
@@ -318,6 +319,7 @@ main {
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   align-items: start;
+  justify-content: center;
   gap: 1.5rem;
 }
 
@@ -351,18 +353,6 @@ main {
   max-width: 3.75rem;
   justify-content: center;
   align-items: flex-start;
-}
-
-/* --- temp --- */
-
-.layout-hints-right-tray-right {
-  outline: 3px solid red;
-}
-.layout-hints-below-tray-right {
-  outline: 3px solid blue;
-}
-.layout-stacked {
-  outline: 3px solid green;
 }
 
 /* ---------- menu ---------- */
