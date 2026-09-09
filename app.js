@@ -708,26 +708,7 @@ function updateLayout() {
 
   if (rightColumns >= 1 && G.hints.length > 0) {
     const firstHint = hintsEl.querySelector('li');
-    let hintH = 0;
-
-    if (firstHint) {
-      const cs = getComputedStyle(firstHint);
-
-      const lineHeight = parseFloat(cs.lineHeight);
-      const padV = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
-      const borderV = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
-
-      hintH = lineHeight + padV + borderV;
-
-      if (!isFinite(hintH) || hintH <= 0) {
-        hintH = firstHint.getBoundingClientRect().height;
-      }
-    }
-
-    if (!hintH || hintH <= 0) {
-      hintH = 3 * rem;
-    }
-
+    const hintH = 3 * rem;
     const totalHintsH = hintH * G.hints.length;
     const rightCapacity = rightColumns * availH;
 
