@@ -414,32 +414,36 @@ const newBtn    = document.getElementById('newBtn');
 
 const sounds = (() => {
   let ctx = null;
-  function ac() {
+
+  function getCtx() {
+    if (ctx) return ctx;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
     try {
-      if (!ctx) {
-        ctx = new (window.AudioContext || window.webkitAudioContext)();
-        /* Unlock audio on iOS by playing a silent buffer */
-        const buf = ctx.createBuffer(1, 1, 22050);
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        src.connect(ctx.destination);
-        src.start(0);
-      }
-      if (ctx && ctx.state === 'suspended') ctx.resume();
-    } catch (e) {}
+      ctx = new AC();
+    } catch (e) {
+      return null;
+    }
     return ctx;
   }
+
   function note(f, { at = 0, dur = 0.18, type = 'sine', vol = 0.045 } = {}) {
-    const c = ac(); if (!c) return;
+    const c = getCtx();
+    if (!c) return;
+    if (c.state === 'suspended') c.resume();
     const t0 = c.currentTime + at;
     const o = c.createOscillator(), g = c.createGain();
-    o.type = type; o.frequency.setValueAtTime(f, t0);
+    o.type = type;
+    o.frequency.setValueAtTime(f, t0);
     g.gain.setValueAtTime(0.0001, t0);
     g.gain.exponentialRampToValueAtTime(vol, t0 + 0.015);
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-    o.connect(g); g.connect(c.destination);
-    o.start(t0); o.stop(t0 + dur + 0.05);
+    o.connect(g);
+    g.connect(c.destination);
+    o.start(t0);
+    o.stop(t0 + dur + 0.05);
   }
+
   return {
     tick() { if (soundOn) note(1320, { dur: 0.04, vol: 0.015 }); },
     ok()   { if (!soundOn) return; note(660, { dur: 0.12 }); note(990, { at: 0.08, dur: 0.16, vol: 0.035 }); },
