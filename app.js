@@ -412,6 +412,11 @@ const newBtn    = document.getElementById('newBtn');
 
 /* ================= sounds ================= */
 
+/* Hide sound button if Web Audio API is not available */
+if (!(window.AudioContext || window.webkitAudioContext)) {
+  soundBtn.style.display = 'none';
+}
+
 const sounds = (() => {
   let ctx = null;
 
