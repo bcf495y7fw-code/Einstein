@@ -24,8 +24,8 @@ const SETS = [
   { id: 'op',  kind: 'sign',   glyphs: ['+', '−', '×', '/', '=', '≠', '<', '>'],
     names: ['plus', 'minus', 'times', 'divided by', 'equals', 'not equals', 'less than', 'greater than'] },
 
-  { id: 'shp', kind: 'shape',  glyphs: ['●', '▲', '■', '◆', '★', '⬟', '✦', '⬢'],
-    names: ['circle', 'triangle', 'square', 'diamond', 'star', 'pentagon', 'four point star', 'hexagon'] },
+  { id: 'shp', kind: 'shape',  glyphs: ['●', '▲', '■', '◆', '★', '⬟', '▰', '▼'],
+    names: ['circle', 'triangle', 'square', 'diamond', 'star', 'pentagon', 'parallelogram', 'inverted triangle'] },
 
   { id: 'grk', kind: 'letter', glyphs: ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ'],
     names: ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta'] },
